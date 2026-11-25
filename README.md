@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Fauzora Marketplace
 
 Fauzora adalah aplikasi marketplace berbasis ASP.NET Core MVC dengan .NET 10, Entity Framework Core, PostgreSQL, ASP.NET Core Identity, Bootstrap, Repository, dan Service.
@@ -405,3 +406,7 @@ Fitur keranjang mendukung pemilihan barang per item maupun per toko. Checkout me
 - Order lama yang belum memiliki seller eksplisit tetap dapat diakses customer, tetapi tidak muncul pada manajemen order seller.
 - Belum ada proyek test otomatis. Build dan smoke test route/wilayah berhasil pada pemeriksaan lokal, tetapi skenario end-to-end customer/seller/admin, concurrency, dan security masih perlu dijalankan sebelum production.
 - Audit lokal menemukan file sementara verifikasi berisi connection string database dengan password non-placeholder di bawah `%muhammad.fauzan%/AppData/Local/Temp/fauzora-verify/`. Status tracking belum diverifikasi; pastikan file tidak dibagikan/di-commit, hapus salinan yang tidak diperlukan, dan rotasi credential bila masih berlaku.
+=======
+# Fauzora
+A scalable e-commerce platform developed using ASP.NET Core 10, featuring secure authentication, role-based access control, product catalog management, shopping cart, order processing, and administrative tools.
+>>>>>>> 54d1d12961383fceb6a42b6df16cf05b189222b0
