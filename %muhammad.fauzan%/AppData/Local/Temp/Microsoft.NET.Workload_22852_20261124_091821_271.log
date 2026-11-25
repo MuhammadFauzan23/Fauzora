@@ -1,0 +1,14 @@
+[2026-11-24 09:18:21.276] [00005944] === Logging started ===
+[2026-11-24 09:18:21.291] [00005944] Executing: "dotnet" build C:\xampp\htdocs\Fauzora\Fauzora.csproj --configuration Release /verbosity:quiet /nologo /p:PublishAot=false, PID: 22852, PPID: 17504
+[2026-11-24 09:18:21.293] [00005944] IsElevated: False
+[2026-11-24 09:18:21.293] [00005944] Is64BitProcess: True
+[2026-11-24 09:18:21.293] [00005944] RebootPending: False
+[2026-11-24 09:18:21.293] [00005944] ProcessorArchitecture: amd64
+[2026-11-24 09:18:21.293] [00005944] HostArchitecture: x64
+[2026-11-24 09:18:21.293] [00005944] SdkDirectory: 10.0.402
+[2026-11-24 09:18:21.293] [00005944] VerifySignatures: False
+[2026-11-24 09:18:21.293] [00005944] SDK feature band: 10.0.400
+[2026-11-24 09:18:27.054] [00005944] Shutting down
+[2026-11-24 09:18:27.054] [00005944] Shutdown completed.
+[2026-11-24 09:18:27.054] [00005944] Restart required: False
+[2026-11-24 09:18:27.054] [00005944] === Logging ended ===

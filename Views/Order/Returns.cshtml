@@ -1,0 +1,61 @@
+@model IEnumerable<Order>
+@{ ViewData["Title"] = "Pengajuan Pengembalian"; }
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <a asp-action="Manage" class="text-muted small">&larr; Kelola pesanan</a>
+        <h1 class="h3 mt-2 mb-0">Pengajuan Pengembalian</h1>
+    </div>
+    <span class="badge text-bg-warning">@Model.Count() pengajuan</span>
+</div>
+@if (!Model.Any())
+{
+    <div class="empty-state">Belum ada pengajuan pengembalian.</div>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var order in Model)
+        {
+            <div class="col-12">
+                <article class="panel return-card">
+                    <div class="d-flex flex-wrap justify-content-between gap-2 mb-3">
+                        <div>
+                            <strong>Pesanan #@order.OrderNumber</strong>
+                            <div class="text-muted small">@order.Customer?.Email · diajukan @order.ReturnRequestedAt?.ToLocalTime().ToString("dd MMM yyyy HH:mm")</div>
+                        </div>
+                        <span class="badge @ReturnRequestStatus.BadgeClass(order.ReturnStatus)">@ReturnRequestStatus.Label(order.ReturnStatus)</span>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <h2 class="h6">Produk</h2>
+                            <ul class="small mb-0">
+                                @foreach (var item in order.Items)
+                                {
+                                    <li>@item.ProductName (@item.Quantity x @item.UnitPrice.ToRupiah())</li>
+                                }
+                            </ul>
+                            <strong class="d-block mt-2">Total: @order.Total.ToRupiah()</strong>
+                        </div>
+                        <div class="col-md-7">
+                            <h2 class="h6">Alasan customer</h2>
+                            <p class="return-reason">@order.ReturnReason</p>
+                            @if (order.ReturnStatus == ReturnRequestStatus.Requested)
+                            {
+                                <form asp-action="DecideReturn" method="post" data-swal-confirm data-swal-title="Proses pengembalian?" data-swal-text="Keputusan ini akan dikirim ke customer." data-swal-confirm-text="Ya, proses">
+                                    <input type="hidden" name="id" value="@order.Id" />
+                                    <input type="text" name="adminNote" class="form-control form-control-sm mb-2" maxlength="500" placeholder="Catatan keputusan (opsional)" />
+                                    <button name="approved" value="true" class="btn btn-sm btn-success me-1">Setujui Pengembalian</button>
+                                    <button name="approved" value="false" class="btn btn-sm btn-outline-danger">Tolak Pengajuan</button>
+                                </form>
+                            }
+                            else if (!string.IsNullOrWhiteSpace(order.ReturnAdminNote))
+                            {
+                                <p class="text-muted small mb-0">Catatan keputusan: @order.ReturnAdminNote</p>
+                            }
+                        </div>
+                    </div>
+                </article>
+            </div>
+        }
+    </div>
+}

@@ -1,0 +1,14 @@
+[2026-11-24 16:38:17.089] [00003E38] === Logging started ===
+[2026-11-24 16:38:17.097] [00003E38] Executing: "C:\Program Files\dotnet\dotnet.exe" build C:\xampp\htdocs\Fauzora\Fauzora.csproj --no-restore /t:_ExtractUserSecretsMetadata /p:_UserSecretsMetadataFile=C:\xampp\htdocs\Fauzora\%muhammad.fauzan%\AppData\Local\Temp\ffqcokay.sqh /p:Configuration=Debug "/p:CustomAfterMicrosoftCommonTargets=C:\Program Files\dotnet\sdk\10.0.402\DotnetTools\dotnet-user-secrets\10.0.13-servicing.26504.104\tools\net10.0\any\assets\SecretManager.targets" "/p:CustomAfterMicrosoftCommonCrossTargetingTargets=C:\Program Files\dotnet\sdk\10.0.402\DotnetTools\dotnet-user-secrets\10.0.13-servicing.26504.104\tools\net10.0\any\assets\SecretManager.targets" -verbosity:detailed, PID: 15928, PPID: 21948
+[2026-11-24 16:38:17.098] [00003E38] IsElevated: False
+[2026-11-24 16:38:17.098] [00003E38] Is64BitProcess: True
+[2026-11-24 16:38:17.098] [00003E38] RebootPending: False
+[2026-11-24 16:38:17.098] [00003E38] ProcessorArchitecture: amd64
+[2026-11-24 16:38:17.098] [00003E38] HostArchitecture: x64
+[2026-11-24 16:38:17.098] [00003E38] SdkDirectory: 10.0.402
+[2026-11-24 16:38:17.098] [00003E38] VerifySignatures: False
+[2026-11-24 16:38:17.098] [00003E38] SDK feature band: 10.0.400
+[2026-11-24 16:38:17.809] [00003E38] Shutting down
+[2026-11-24 16:38:17.809] [00003E38] Shutdown completed.
+[2026-11-24 16:38:17.809] [00003E38] Restart required: False
+[2026-11-24 16:38:17.810] [00003E38] === Logging ended ===

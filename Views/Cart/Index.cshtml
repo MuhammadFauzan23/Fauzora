@@ -1,0 +1,145 @@
+@model List<CartItem>
+@using System.Globalization
+@{
+    ViewData["Title"] = "Keranjang";
+    var sellerGroups = Model
+        .GroupBy(item => new
+        {
+            SellerId = item.Product?.SellerId ?? "",
+            SellerName = item.Product?.Seller?.FullName ?? "Seller tidak diketahui"
+        })
+        .ToList();
+}
+<h2 class="mb-3">Keranjang Belanja</h2>
+@if (!Model.Any())
+{
+    <div class="empty-state">
+        Keranjang kamu masih kosong.
+        <div class="mt-3"><a class="btn btn-primary" asp-controller="Product" asp-action="Index">Belanja sekarang</a></div>
+    </div>
+}
+else
+{
+    <div class="cart-selection-toolbar">
+        <label class="cart-select-all" for="selectAllCartItems">
+            <input type="checkbox" id="selectAllCartItems" class="cart-select-control" aria-label="Pilih semua barang" />
+            <span>Pilih semua barang</span>
+        </label>
+        <span class="text-muted small">Keranjang dikelompokkan berdasarkan toko</span>
+    </div>
+
+    <div class="cart-seller-groups">
+        @foreach (var sellerGroup in sellerGroups)
+        {
+            <section class="cart-seller-card">
+                <header class="cart-seller-header">
+                    <label class="cart-select-all" for="sellerSelect_@sellerGroups.IndexOf(sellerGroup)">
+                        <input type="checkbox" id="sellerSelect_@sellerGroups.IndexOf(sellerGroup)" class="cart-select-control seller-group-selection"
+                               data-seller-id="@sellerGroup.Key.SellerId" aria-label="Pilih semua barang dari @sellerGroup.Key.SellerName" />
+                    </label>
+                    <span class="cart-store-icon" aria-hidden="true">▣</span>
+                    <strong>@sellerGroup.Key.SellerName</strong>
+                    <span class="cart-store-count">@sellerGroup.Count() barang</span>
+                </header>
+                <div class="table-card table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr><th>Produk</th><th>Harga</th><th>Jumlah</th><th>Subtotal</th><th></th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in sellerGroup)
+                            {
+                                var price = item.Product?.Price ?? 0;
+                                var lineTotal = price * item.Quantity;
+                                <tr class="cart-item-row">
+                                    <td class="cart-product-cell">
+                                        <input type="checkbox" class="cart-select-control cart-item-selection" name="selectedCartItemIds"
+                                               value="@item.Id" form="checkoutForm" aria-label="Pilih @item.Product?.Name untuk checkout"
+                                               data-seller-id="@sellerGroup.Key.SellerId"
+                                               data-line-total="@lineTotal.ToString(CultureInfo.InvariantCulture)" />
+                                        <div class="cart-product">
+                                            <div class="cart-product-image">
+                                                @if (!string.IsNullOrWhiteSpace(item.Product?.ImageUrl))
+                                                {
+                                                    <img src="@item.Product.ImageUrl" alt="@item.Product.Name" loading="lazy" />
+                                                }
+                                                else
+                                                {
+                                                    <span>Fauzora</span>
+                                                }
+                                            </div>
+                                            <span class="cart-product-name">@item.Product?.Name</span>
+                                        </div>
+                                    </td>
+                                    <td>@price.ToRupiah()</td>
+                                    <td>
+                                        <form asp-action="Update" method="post" class="d-flex gap-2" data-swal-confirm data-swal-title="Perbarui jumlah barang?" data-swal-text="Jumlah barang di keranjang akan diubah." data-swal-confirm-text="Ya, perbarui">
+                                            <input type="hidden" name="id" value="@item.Id" />
+                                            <input type="number" name="quantity" value="@item.Quantity" min="0" class="form-control form-control-sm qty-input" />
+                                            <button class="btn btn-sm btn-outline-primary">Update</button>
+                                        </form>
+                                    </td>
+                                    <td class="price">@lineTotal.ToRupiah()</td>
+                                    <td>
+                                        <form asp-action="Remove" method="post">
+                                            <input type="hidden" name="id" value="@item.Id" />
+                                            <button class="btn btn-sm btn-link text-muted p-0">Hapus</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        }
+    </div>
+    <form id="checkoutForm" asp-controller="Checkout" asp-action="PlaceOrder" method="post" class="checkout-bar">
+        <span><span id="selectedCartCount">0</span> barang dipilih · Total <span id="selectedCartTotal" class="total">@((0m).ToRupiah())</span></span>
+        <button id="checkoutButton" class="btn btn-primary px-4" disabled>Checkout barang dipilih (Demo)</button>
+    </form>
+}
+
+@section Scripts {
+    <script>
+        (() => {
+            const selectAll = document.getElementById('selectAllCartItems');
+            const selections = [...document.querySelectorAll('.cart-item-selection')];
+            const sellerSelections = [...document.querySelectorAll('.seller-group-selection')];
+            const count = document.getElementById('selectedCartCount');
+            const total = document.getElementById('selectedCartTotal');
+            const checkoutButton = document.getElementById('checkoutButton');
+            if (!selectAll || selections.length === 0 || !count || !total || !checkoutButton) return;
+
+            const updateSelection = () => {
+                const selected = selections.filter(item => item.checked);
+                const selectedTotal = selected.reduce((sum, item) => sum + Number(item.dataset.lineTotal || 0), 0);
+                selections.forEach(item => item.closest('tr')?.classList.toggle('cart-item-selected', item.checked));
+                count.textContent = selected.length;
+                total.textContent = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(selectedTotal);
+                checkoutButton.disabled = selected.length === 0;
+                selectAll.checked = selected.length === selections.length;
+                selectAll.indeterminate = selected.length > 0 && selected.length < selections.length;
+                sellerSelections.forEach(groupCheckbox => {
+                    const groupItems = selections.filter(item => item.dataset.sellerId === groupCheckbox.dataset.sellerId);
+                    const selectedInGroup = groupItems.filter(item => item.checked).length;
+                    groupCheckbox.checked = groupItems.length > 0 && selectedInGroup === groupItems.length;
+                    groupCheckbox.indeterminate = selectedInGroup > 0 && selectedInGroup < groupItems.length;
+                });
+            };
+
+            selectAll.addEventListener('change', () => {
+                selections.forEach(item => { item.checked = selectAll.checked; });
+                updateSelection();
+            });
+            sellerSelections.forEach(groupCheckbox => groupCheckbox.addEventListener('change', () => {
+                selections
+                    .filter(item => item.dataset.sellerId === groupCheckbox.dataset.sellerId)
+                    .forEach(item => { item.checked = groupCheckbox.checked; });
+                updateSelection();
+            }));
+            selections.forEach(item => item.addEventListener('change', updateSelection));
+            updateSelection();
+        })();
+    </script>
+}

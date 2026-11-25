@@ -1,0 +1,60 @@
+@model List<Fauzora.Models.Category>
+@{ ViewData["Title"] = "Kelola Kategori"; }
+<section class="catalog-head">
+    <div>
+        <p class="eyebrow">Administrasi Fauzora</p>
+        <h1>Kelola Kategori</h1>
+        <p class="catalog-subtitle">Tambah dan perbarui kategori katalog. Kategori yang masih digunakan produk tidak dapat dihapus.</p>
+    </div>
+</section>
+
+<div class="row g-3">
+    <div class="col-lg-4">
+        <section class="panel p-3">
+            <h2 class="h5">Tambah kategori</h2>
+            <form asp-action="CreateCategory" method="post">
+                <div class="mb-3">
+                    <label class="form-label" for="new-category-name">Nama</label>
+                    <input id="new-category-name" name="name" class="form-control" maxlength="80" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="new-category-description">Deskripsi</label>
+                    <textarea id="new-category-description" name="description" class="form-control" maxlength="300" rows="3"></textarea>
+                </div>
+                <button class="btn btn-primary">Tambah kategori</button>
+            </form>
+        </section>
+    </div>
+
+    <div class="col-lg-8">
+        @if (Model.Count == 0)
+        {
+            <div class="panel p-4 text-center text-muted">Belum ada kategori.</div>
+        }
+        @foreach (var category in Model)
+        {
+            <section class="panel p-3 mb-3">
+                <form asp-action="UpdateCategory" method="post">
+                    <input type="hidden" name="id" value="@category.Id" />
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-4">
+                            <label class="form-label" for="category-name-@category.Id">Nama</label>
+                            <input id="category-name-@category.Id" name="name" value="@category.Name" class="form-control" maxlength="80" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="category-description-@category.Id">Deskripsi</label>
+                            <textarea id="category-description-@category.Id" name="description" class="form-control" maxlength="300" rows="2">@category.Description</textarea>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-primary w-100">Simpan</button>
+                        </div>
+                    </div>
+                </form>
+                <form asp-action="DeleteCategory" method="post" class="mt-2" data-swal-confirm data-swal-title="Hapus kategori ini?" data-swal-text="Kategori yang masih dipakai produk tidak dapat dihapus." data-swal-confirm-text="Ya, hapus" data-swal-icon="warning">
+                    <input type="hidden" name="id" value="@category.Id" />
+                    <button class="btn btn-sm btn-outline-danger">Hapus</button>
+                </form>
+            </section>
+        }
+    </div>
+</div>

@@ -1,0 +1,267 @@
+@model Product
+@inject Fauzora.Services.RichTextSanitizer RichTextSanitizer
+@inject Fauzora.Services.SecureIdService SecureIds
+@{
+    ViewData["Title"] = Model.Name;
+    var canManage = User.Identity?.IsAuthenticated == true && User.IsInRole("Seller") && User.GetUserId() == Model.SellerId;
+    var images = new List<string>();
+    if (!string.IsNullOrWhiteSpace(Model.ImageUrl)) images.Add(Model.ImageUrl);
+    images.AddRange(Model.Images.OrderBy(i => i.SortOrder).Select(i => i.Url));
+    images = images.Distinct().ToList();
+}
+<nav class="crumbs" aria-label="breadcrumb">
+    <a asp-action="Index">Beranda</a>
+    <span>/</span>
+    <a asp-action="Index" asp-route-categoryId="@Model.CategoryId">@Model.Category?.Name</a>
+    <span>/</span>
+    <span class="text-truncate">@Model.Name</span>
+</nav>
+
+<nav class="detail-tabs" aria-label="Navigasi detail produk">
+    <a class="active" href="#product-detail">Detail Produk</a>
+    <a href="#reviews">Ulasan (@Model.RatingCount)</a>
+    <a href="#related-title">Rekomendasi</a>
+</nav>
+
+<div class="panel product-detail-panel" id="product-detail">
+    <div class="detail-layout">
+        <div class="detail-gallery-column">
+            @if (images.Count == 0)
+            {
+                <div class="detail-image"><div class="product-placeholder">Fauzora</div></div>
+            }
+            else
+            {
+                <div class="gallery">
+                    <div id="productCarousel" class="carousel slide" data-gallery data-bs-ride="false">
+                        <div class="carousel-inner">
+                            @for (var i = 0; i < images.Count; i++)
+                            {
+                                <div class="carousel-item @(i == 0 ? "active" : "")">
+                                    <div class="detail-image zoomable" data-lightbox-index="@i" role="button" aria-label="Perbesar gambar">
+                                        <img src="@images[i]" alt="@Model.Name (@(i + 1))" />
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        @if (images.Count > 1)
+                        {
+                            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev" aria-label="Sebelumnya"><span class="carousel-control-prev-icon"></span></button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next" aria-label="Berikutnya"><span class="carousel-control-next-icon"></span></button>
+                        }
+                    </div>
+                    @if (images.Count > 1)
+                    {
+                        <div class="thumbs">
+                            @for (var i = 0; i < images.Count; i++)
+                            {
+                                <button type="button" class="thumb @(i == 0 ? "active" : "")" data-bs-target="#productCarousel" data-bs-slide-to="@i" aria-label="Gambar @(i + 1)">
+                                    <img src="@images[i]" alt="" loading="lazy" />
+                                </button>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+        <div class="detail-info-column">
+            <h1 class="detail-title">@Model.Name</h1>
+            @if (!Model.IsActive)
+            {
+                <span class="badge text-bg-secondary rounded-1">Tidak aktif</span>
+            }
+            <div class="detail-price">@Model.Price.ToRupiah()</div>
+            <div class="rating-summary mb-3">
+                <span class="stars" style="--rating: @Model.RatingAverage.ToRatingNumber()" aria-label="Rating @Model.RatingAverage dari 5"></span>
+                <span class="text-muted small">@Model.RatingAverage.ToString("0.0") (@Model.RatingCount ulasan)</span>
+            </div>
+            <dl class="info-list">
+                <dt>Kategori</dt>
+                <dd><a asp-action="Index" asp-route-categoryId="@Model.CategoryId">@Model.Category?.Name</a></dd>
+                <dt>Nama toko</dt>
+                <dd class="store-name">@(string.IsNullOrWhiteSpace((string?)ViewBag.StoreName) ? Model.Seller?.FullName ?? "-" : ViewBag.StoreName)</dd>
+                <dt>Asal toko</dt>
+                <dd>@(string.IsNullOrWhiteSpace(Model.Seller?.City) ? "-" : Model.Seller!.City)</dd>
+                <dt>Stok</dt>
+                <dd>@(Model.Stock > 0 ? $"{Model.Stock} tersedia" : "Habis")</dd>
+            </dl>
+            @if (canManage)
+            {
+                <a asp-action="Edit" asp-route-id="@SecureIds.Protect(Model.Id)" class="btn btn-outline-primary mt-3">Edit Produk</a>
+            }
+        </div>
+        <aside class="purchase-card">
+            <h2>Atur jumlah dan beli</h2>
+            <div class="purchase-product">
+                <div class="purchase-thumb">
+                    @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+                    {
+                        <img src="@Model.ImageUrl" alt="@Model.Name" />
+                    }
+                    else
+                    {
+                        <span>Fauzora</span>
+                    }
+                </div>
+                <span>@Model.Name</span>
+            </div>
+            @if (User.IsInRole("Customer") && Model.IsActive)
+            {
+                @if (Model.Stock > 0)
+                {
+                    <form asp-controller="Cart" asp-action="Add" method="post" class="buy-form">
+                        <input type="hidden" name="productId" value="@Model.Id" />
+                        <div class="purchase-quantity">
+                            <span>Jumlah</span>
+                            <div class="qty-stepper" data-qty>
+                                <button type="button" data-step="-1" aria-label="Kurangi">&minus;</button>
+                                <input type="number" name="quantity" value="1" min="1" max="@Model.Stock" aria-label="Jumlah" />
+                                <button type="button" data-step="1" aria-label="Tambah">+</button>
+                            </div>
+                        </div>
+                        <div class="purchase-stock">Stok: <strong>@Model.Stock</strong></div>
+                        <button class="btn btn-primary w-100">+ Masukkan Keranjang</button>
+                    </form>
+                }
+                else
+                {
+                    <div class="text-muted">Stok habis.</div>
+                }
+            }
+            else if (User.Identity?.IsAuthenticated != true)
+            {
+                <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path" class="btn btn-primary w-100">Login untuk membeli</a>
+            }
+        </aside>
+    </div>
+</div>
+
+<div class="panel mt-2">
+    <h2 class="section-title">Deskripsi Produk</h2>
+    <div class="description-content is-collapsed" id="product-description" data-description-content>
+        <div class="rich-text-content">@Html.Raw(RichTextSanitizer.Sanitize(Model.Description))</div>
+    </div>
+    <button type="button" class="description-toggle" data-description-toggle aria-controls="product-description" aria-expanded="false">Lihat selengkapnya</button>
+</div>
+
+<div class="panel mt-2" id="reviews">
+    @await Component.InvokeAsync("ProductReviews", new { productId = Model.Id })
+</div>
+
+@if (ViewBag.RelatedProducts is List<Product> relatedProducts && relatedProducts.Count > 0)
+{
+    <section class="related-section" aria-labelledby="related-title">
+        <div class="related-heading">
+            <h2 id="related-title">Rekomendasi dari toko ini</h2>
+            <span class="related-context">Kategori yang sama</span>
+        </div>
+        <div class="product-grid">
+            @foreach (var product in relatedProducts)
+            {
+                <div>
+                    <a class="product-card" asp-action="Details" asp-route-id="@SecureIds.Protect(product.Id)">
+                        <div class="product-thumb">
+                            @if (!string.IsNullOrWhiteSpace(product.ImageUrl))
+                            {
+                                <img src="@product.ImageUrl" alt="@product.Name" loading="lazy" />
+                            }
+                            else
+                            {
+                                <div class="product-placeholder">Fauzora</div>
+                            }
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">@product.Name</div>
+                            <div class="product-meta">
+                                <span class="price">@product.Price.ToRupiah()</span>
+                                <small>Sisa @product.Stock</small>
+                            </div>
+                            <div class="product-rating">
+                                <span class="stars stars-sm" style="--rating: @product.RatingAverage.ToRatingNumber()"></span>
+                                <small>@product.RatingCount</small>
+                            </div>
+                            @if (!string.IsNullOrWhiteSpace(product.Seller?.City))
+                            {
+                                <small class="product-city">@product.Seller.City</small>
+                            }
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </section>
+}
+
+@if (ViewBag.OtherStoreProducts is List<Product> otherStoreProducts && otherStoreProducts.Count > 0)
+{
+    <section class="related-section" aria-labelledby="other-store-title">
+        <div class="related-heading">
+            <h2 id="other-store-title">Dari toko lainnya</h2>
+            <span class="related-context">Kategori yang sama</span>
+        </div>
+        <div class="product-grid">
+            @foreach (var product in otherStoreProducts)
+            {
+                <div>
+                    <a class="product-card" asp-action="Details" asp-route-id="@SecureIds.Protect(product.Id)">
+                        <div class="product-thumb">
+                            @if (!string.IsNullOrWhiteSpace(product.ImageUrl))
+                            {
+                                <img src="@product.ImageUrl" alt="@product.Name" loading="lazy" />
+                            }
+                            else
+                            {
+                                <div class="product-placeholder">Fauzora</div>
+                            }
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">@product.Name</div>
+                            <div class="product-meta">
+                                <span class="price">@product.Price.ToRupiah()</span>
+                                <small>Sisa @product.Stock</small>
+                            </div>
+                            <div class="product-rating">
+                                <span class="stars stars-sm" style="--rating: @product.RatingAverage.ToRatingNumber()"></span>
+                                <small>@product.RatingCount</small>
+                            </div>
+                            @if (!string.IsNullOrWhiteSpace(product.Seller?.FullName))
+                            {
+                                <small class="product-city">Toko: @product.Seller.FullName</small>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(product.Seller?.City))
+                            {
+                                <small class="product-city">@product.Seller.City</small>
+                            }
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </section>
+}
+
+@if (images.Count > 0)
+{
+    <div class="modal fade lightbox" id="lightbox" tabindex="-1" aria-label="Galeri gambar" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <button type="button" class="btn-close btn-close-white lightbox-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                <div id="lightboxCarousel" class="carousel slide h-100" data-bs-ride="false" data-bs-touch="false">
+                    <div class="carousel-inner h-100">
+                        @for (var i = 0; i < images.Count; i++)
+                        {
+                            <div class="carousel-item h-100 @(i == 0 ? "active" : "")">
+                                <div class="lightbox-stage" title="Klik untuk memperbesar"><img src="@images[i]" alt="@Model.Name (@(i + 1))" /></div>
+                            </div>
+                        }
+                    </div>
+                    @if (images.Count > 1)
+                    {
+                        <button class="carousel-control-prev" type="button" data-bs-target="#lightboxCarousel" data-bs-slide="prev" aria-label="Sebelumnya"><span class="carousel-control-prev-icon"></span></button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#lightboxCarousel" data-bs-slide="next" aria-label="Berikutnya"><span class="carousel-control-next-icon"></span></button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}

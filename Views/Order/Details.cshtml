@@ -1,0 +1,81 @@
+@model Order
+@inject Fauzora.Services.SecureIdService SecureIds
+@{ ViewData["Title"] = "Detail Pesanan"; }
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <a asp-action="Index" class="text-muted small">&larr; Pesanan Saya</a>
+        <h1 class="h3 mb-1 mt-2">Detail Pesanan #@Model.OrderNumber</h1>
+        <div class="text-muted small">@Model.CreatedAt.ToLocalTime().ToString("dd MMMM yyyy HH:mm")</div>
+        @if (Model.SellerName is not null)
+        {
+            <div class="text-muted small">Toko: @Model.SellerName</div>
+        }
+    </div>
+    <span class="badge @OrderStatus.BadgeClass(Model.Status)">@Model.Status</span>
+</div>
+
+<div class="panel order-timeline mb-3">
+    <div class="timeline-step @(Model.Status is OrderStatus.PaidDemo or OrderStatus.Pending or OrderStatus.Processing or OrderStatus.Shipped or OrderStatus.Delivered or OrderStatus.Completed ? "active" : "")"><strong>Pesanan dibuat</strong></div>
+    <div class="timeline-step @(Model.Status is OrderStatus.Shipped or OrderStatus.Delivered or OrderStatus.Completed ? "active" : "")"><strong>Dikirim</strong></div>
+    <div class="timeline-step @(Model.Status is OrderStatus.Delivered or OrderStatus.Completed ? "active" : "")"><strong>Barang sampai</strong></div>
+    <div class="timeline-step @(Model.Status == OrderStatus.Completed ? "active" : "")"><strong>Selesai</strong></div>
+</div>
+
+<div class="panel mb-3">
+    <h2 class="section-title">Informasi Alamat</h2>
+    @await Html.PartialAsync("_OrderAddressSnapshots", new OrderAddressSnapshotVm { Order = Model, ShowCustomerAddress = true, ShowSellerAddress = true })
+</div>
+
+<div class="panel mb-3">
+    <h2 class="section-title">Produk dalam pesanan</h2>
+    <div class="order-items">
+        @foreach (var item in Model.Items)
+        {
+            <div class="order-item-row">
+                <div><strong>@item.ProductName</strong><small class="d-block text-muted">@item.Quantity x @item.UnitPrice.ToRupiah()</small></div>
+                <span>@((item.Quantity * item.UnitPrice).ToRupiah())</span>
+            </div>
+        }
+    </div>
+    <div class="order-total"><span>Total</span><strong>@Model.Total.ToRupiah()</strong></div>
+</div>
+
+<div class="panel order-actions">
+    @if (Model.Status == OrderStatus.Delivered)
+    {
+        <p class="text-muted small">Konfirmasi sebelum @(Model.DeliveredAt?.AddDays(7).ToLocalTime().ToString("dd MMM yyyy HH:mm") ?? "7 hari setelah pesanan tiba"). Jika tidak dikonfirmasi, pesanan akan selesai otomatis tanpa review.</p>
+        <div class="d-flex flex-wrap gap-2">
+            <form asp-action="ConfirmReceived" method="post" data-swal-confirm data-swal-title="Konfirmasi pesanan diterima?" data-swal-text="Setelah dikonfirmasi, Anda dapat memberikan review." data-swal-confirm-text="Ya, sudah diterima">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button class="btn btn-primary">Pesanan Diterima</button>
+            </form>
+            @if (Model.ReturnStatus == ReturnRequestStatus.None)
+            {
+                <a asp-action="Return" asp-route-id="@SecureIds.Protect(Model.Id)" class="btn btn-outline-danger">Ajukan Pengembalian</a>
+            }
+        </div>
+    }
+    else if (Model.Status == OrderStatus.Completed)
+    {
+        <div class="d-flex flex-wrap gap-2">
+            @foreach (var item in Model.Items)
+            {
+                <a asp-controller="Product" asp-action="Details" asp-route-id="@SecureIds.Protect(item.ProductId)" asp-fragment="reviews" class="btn btn-outline-primary">Review Produk</a>
+            }
+            @if (Model.ReturnStatus == ReturnRequestStatus.None)
+            {
+                <a asp-action="Return" asp-route-id="@SecureIds.Protect(Model.Id)" class="btn btn-outline-danger">Ajukan Pengembalian</a>
+            }
+        </div>
+    }
+    @if (Model.ReturnStatus != ReturnRequestStatus.None)
+    {
+        <div class="return-status mt-3">
+            <span class="badge @ReturnRequestStatus.BadgeClass(Model.ReturnStatus)">Pengembalian: @ReturnRequestStatus.Label(Model.ReturnStatus)</span>
+            @if (!string.IsNullOrWhiteSpace(Model.ReturnAdminNote))
+            {
+                <p class="text-muted small mt-2 mb-0">Catatan keputusan: @Model.ReturnAdminNote</p>
+            }
+        </div>
+    }
+</div>

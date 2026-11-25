@@ -1,0 +1,14 @@
+[2026-11-25 10:39:18.533] [00001248] === Logging started ===
+[2026-11-25 10:39:18.544] [00001248] Executing: "C:\Program Files\dotnet\dotnet.exe" build Fauzora.csproj --configuration Release --no-restore, PID: 4680, PPID: 29624
+[2026-11-25 10:39:18.546] [00001248] IsElevated: False
+[2026-11-25 10:39:18.546] [00001248] Is64BitProcess: True
+[2026-11-25 10:39:18.546] [00001248] RebootPending: False
+[2026-11-25 10:39:18.546] [00001248] ProcessorArchitecture: amd64
+[2026-11-25 10:39:18.546] [00001248] HostArchitecture: x64
+[2026-11-25 10:39:18.546] [00001248] SdkDirectory: 10.0.402
+[2026-11-25 10:39:18.546] [00001248] VerifySignatures: False
+[2026-11-25 10:39:18.546] [00001248] SDK feature band: 10.0.400
+[2026-11-25 10:39:24.634] [00001248] Shutting down
+[2026-11-25 10:39:24.634] [00001248] Shutdown completed.
+[2026-11-25 10:39:24.634] [00001248] Restart required: False
+[2026-11-25 10:39:24.635] [00001248] === Logging ended ===

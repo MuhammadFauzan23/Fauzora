@@ -1,0 +1,90 @@
+@model ReviewPanelVm
+@inject Fauzora.Services.SecureIdService SecureIds
+<div class="reviews-header">
+    <div>
+        <h2 class="section-title mb-0">Ulasan Produk</h2>
+        <div class="review-score">
+            <span class="stars" style="--rating: @Model.Average.ToRatingNumber()" aria-label="Rating @Model.Average dari 5"></span>
+            <strong>@Model.Average.ToString("0.0")</strong>
+            <span class="text-muted small">dari @Model.Count ulasan</span>
+        </div>
+    </div>
+</div>
+
+<div class="review-filters" data-review-filters data-selected-rating="@(Model.SelectedRating?.ToString() ?? "all")" aria-label="Filter ulasan berdasarkan rating">
+    <span class="review-filter-label">Lihat ulasan:</span>
+    <a class="review-filter @(Model.SelectedRating is null ? "active" : "")" href="@Url.Action("Details", "Product", new { id = SecureIds.Protect(Model.ProductId) })" data-review-filter="all">Semua (@Model.Count)</a>
+    @for (var rating = 5; rating >= 1; rating--)
+    {
+        var count = Model.RatingCounts.GetValueOrDefault(rating);
+        <a class="review-filter @(Model.SelectedRating == rating ? "active" : "")" href="@Url.Action("Details", "Product", new { id = SecureIds.Protect(Model.ProductId), rating })" data-review-filter="@rating">
+            @rating <span class="filter-star">&#9733;</span> (@count)
+        </a>
+    }
+</div>
+
+@if (Model.CanReview)
+{
+    <form asp-controller="Review" asp-action="Submit" method="post" class="review-form review-composer" data-review-form>
+        <input asp-for="Form.ProductId" type="hidden" />
+        <div class="review-composer-title">
+            <div>
+                <strong>Bagaimana pengalaman belanja Anda?</strong>
+                <span>Pilih rating dan ceritakan pengalaman Anda.</span>
+            </div>
+            <span class="review-badge">Pesanan diterima</span>
+        </div>
+        <fieldset class="rating-picker">
+            <legend>Rating Anda</legend>
+            <div class="star-input" role="radiogroup" aria-label="Pilih rating">
+            @for (var rating = 5; rating >= 1; rating--)
+            {
+                <input asp-for="Form.Rating" type="radio" value="@rating" id="rating-@rating" />
+                <label for="rating-@rating" title="@rating bintang">&#9733;</label>
+            }
+            </div>
+            <output class="rating-label" data-rating-label>Pilih bintang</output>
+        </fieldset>
+        <textarea asp-for="Form.Comment" class="form-control mb-2" rows="3" placeholder="Bagikan pengalaman Anda (opsional)"></textarea>
+        <label class="review-check">
+            <input type="checkbox" class="form-check-input" data-review-confirm />
+            <span>Saya sudah menerima dan memeriksa produk ini.</span>
+        </label>
+        <button class="btn btn-primary btn-sm" type="submit" data-review-submit disabled>Kirim ulasan</button>
+    </form>
+}
+else if (User.IsInRole("Customer") && Model.HasReviewed)
+{
+    <p class="text-success small review-note">Anda sudah memberikan ulasan untuk produk ini.</p>
+}
+else if (User.IsInRole("Customer"))
+{
+    <p class="text-muted small review-note">Ulasan tersedia setelah Anda mengonfirmasi pesanan sebagai diterima.</p>
+}
+
+@if (Model.Reviews.Count == 0)
+{
+    <div class="empty-state review-empty">
+        @(Model.SelectedRating is null ? "Belum ada ulasan untuk produk ini." : $"Belum ada ulasan dengan rating {Model.SelectedRating} bintang.")
+    </div>
+}
+else
+{
+    <div class="review-list">
+        @foreach (var review in Model.Reviews)
+        {
+            <article class="review-item" data-review-item data-rating="@review.Rating">
+                <div class="review-item-top">
+                    <strong>@review.ReviewerName</strong>
+                    <time class="text-muted small" datetime="@review.CreatedAt.ToString("O")">@review.CreatedAt.ToLocalTime().ToString("dd MMM yyyy")</time>
+                </div>
+                <span class="stars stars-sm" style="--rating: @review.Rating" aria-label="Rating @review.Rating dari 5"></span>
+                @if (!string.IsNullOrWhiteSpace(review.Comment))
+                {
+                    <p class="mb-0 mt-2">@review.Comment</p>
+                }
+            </article>
+        }
+    </div>
+    <div class="empty-state review-empty review-filter-empty" data-review-filter-empty hidden>Tidak ada ulasan dengan rating yang dipilih.</div>
+}

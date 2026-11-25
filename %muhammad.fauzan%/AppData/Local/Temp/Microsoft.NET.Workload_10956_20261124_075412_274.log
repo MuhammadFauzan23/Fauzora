@@ -1,0 +1,17 @@
+[2026-11-24 07:54:12.276] [00002ACC] === Logging started ===
+[2026-11-24 07:54:12.293] [00002ACC] Executing: "dotnet" build C:\xampp\htdocs\Fauzora\Fauzora.csproj /verbosity:quiet /nologo /p:PublishAot=false, PID: 10956, PPID: 15720
+[2026-11-24 07:54:12.295] [00002ACC] IsElevated: False
+[2026-11-24 07:54:12.295] [00002ACC] Is64BitProcess: True
+[2026-11-24 07:54:12.295] [00002ACC] RebootPending: False
+[2026-11-24 07:54:12.295] [00002ACC] ProcessorArchitecture: amd64
+[2026-11-24 07:54:12.295] [00002ACC] HostArchitecture: x64
+[2026-11-24 07:54:12.295] [00002ACC] SdkDirectory: 10.0.402
+[2026-11-24 07:54:12.295] [00002ACC] VerifySignatures: False
+[2026-11-24 07:54:12.295] [00002ACC] SDK feature band: 10.0.400
+[2026-11-24 07:54:14.317] [00002ACC] ExtractManifestAsync: Extracting 'C:\xampp\htdocs\Fauzora\%muhammad.fauzan%\AppData\Local\Temp\54u03aqb.btx\microsoft.net.workloads.10.0.400.msi.x64\10.404.0\microsoft.net.workloads.10.0.400.msi.x64.10.404.0.nupkg' to 'C:\Users\muhammad.fauzan\.dotnet\sdk-advertising\10.0.400\microsoft.net.workloads'
+[2026-11-24 07:54:14.318] [00002ACC] ExtractManifestAsync: Temporary extraction path: 'C:\xampp\htdocs\Fauzora\%muhammad.fauzan%\AppData\Local\Temp\2wz3y1hb.tri'
+[2026-11-24 07:54:14.387] [00002ACC] ExtractManifestAsync: Running admin install for 'C:\xampp\htdocs\Fauzora\%muhammad.fauzan%\AppData\Local\Temp\2wz3y1hb.tri\msi'.  Log file: 'C:\xampp\htdocs\Fauzora\%muhammad.fauzan%\AppData\Local\Temp\Microsoft.NET.Workload_10956_20261124_075412_274_256152e07946b40e3b7efd514abc269b-x64_AdminInstall.log'
+[2026-11-24 07:54:24.732] [00002ACC] Shutting down
+[2026-11-24 07:54:24.732] [00002ACC] Shutdown completed.
+[2026-11-24 07:54:24.732] [00002ACC] Restart required: False
+[2026-11-24 07:54:24.732] [00002ACC] === Logging ended ===

@@ -1,0 +1,40 @@
+@model RegisterVm
+@{ ViewData["Title"] = "Buat Akun"; }
+<div class="auth-page">
+    <div class="auth-shell">
+        <section class="auth-intro">
+            <img src="~/img/logo.svg" alt="Logo Fauzora" class="auth-logo" />
+            <p class="auth-kicker">Mulai perjalanan belanjamu</p>
+            <h1>Welcome to Fauzora</h1>
+            <p>Buat akun baru dan temukan berbagai produk pilihan dari seller terpercaya.</p>
+        </section>
+        <section class="auth-card">
+            <h2 class="auth-title">Buat akun baru</h2>
+    <form asp-action="Register" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger small mb-2"></div>
+        <div class="form-floating mb-2">
+            <input asp-for="FullName" class="form-control" placeholder="Nama lengkap" autocomplete="name" />
+            <label asp-for="FullName"></label>
+            <span asp-validation-for="FullName" class="text-danger small"></span>
+        </div>
+        <div class="form-floating mb-2">
+            <input asp-for="Email" class="form-control" placeholder="Email" autocomplete="username" />
+            <label asp-for="Email"></label>
+            <span asp-validation-for="Email" class="text-danger small"></span>
+        </div>
+        <div class="form-floating mb-2">
+            <input asp-for="Password" class="form-control" placeholder="Password" autocomplete="new-password" />
+            <label asp-for="Password"></label>
+            <span asp-validation-for="Password" class="text-danger small"></span>
+        </div>
+        <div class="form-floating mb-3">
+            <input asp-for="ConfirmPassword" class="form-control" placeholder="Konfirmasi password" autocomplete="new-password" />
+            <label asp-for="ConfirmPassword"></label>
+            <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+        </div>
+        <button class="btn btn-primary w-100">Buat akun</button>
+    </form>
+    <p class="auth-switch">Sudah punya akun? <a asp-action="Login">Login</a></p>
+        </section>
+    </div>
+</div>

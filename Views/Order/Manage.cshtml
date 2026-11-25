@@ -1,0 +1,69 @@
+@model IEnumerable<Order>
+@{ ViewData["Title"] = "Kelola Pesanan"; }
+<h2 class="mb-3">Kelola Pesanan</h2>
+@if (!Model.Any())
+{
+    <div class="empty-state">Belum ada pesanan.</div>
+}
+else
+{
+    <div class="table-card table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr><th>No. Pesanan</th><th>Toko</th><th>Checkout</th><th>Customer</th><th>Alamat Snapshot</th><th>Total</th><th>Status</th><th>Pengembalian</th><th>Ubah Status</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var o in Model)
+                {
+                    <tr>
+                        <td>@o.OrderNumber</td>
+                        <td>@(o.SellerName ?? "Pesanan lama")</td>
+                        <td>@(o.CheckoutGroupId is Guid groupId ? groupId.ToString("N")[..8].ToUpperInvariant() : "—")</td>
+                        <td>@o.Customer?.Email</td>
+                        <td>
+                            <details class="small">
+                                <summary>Lihat alamat</summary>
+                                @await Html.PartialAsync("_OrderAddressSnapshots", new OrderAddressSnapshotVm { Order = o, ShowCustomerAddress = true, ShowSellerAddress = true })
+                            </details>
+                        </td>
+                        <td>@o.Total.ToRupiah()</td>
+                        <td><span class="badge @OrderStatus.BadgeClass(o.Status)">@o.Status</span></td>
+                        <td>
+                            @if (o.ReturnStatus == ReturnRequestStatus.Requested)
+                            {
+                                <div class="return-review">
+                                    <span class="badge @ReturnRequestStatus.BadgeClass(o.ReturnStatus)">Pengajuan baru</span>
+                                    <p class="small mt-1 mb-2">@o.ReturnReason</p>
+                                    <form asp-action="DecideReturn" method="post" class="d-flex flex-column gap-1" data-swal-confirm data-swal-title="Proses pengembalian?" data-swal-text="Keputusan ini akan dikirim ke customer." data-swal-confirm-text="Ya, proses">
+                                        <input type="hidden" name="id" value="@o.Id" />
+                                        <input type="text" name="adminNote" class="form-control form-control-sm" maxlength="500" placeholder="Catatan keputusan (opsional)" />
+                                        <div class="d-flex gap-1">
+                                            <button name="approved" value="true" class="btn btn-sm btn-success">Setujui</button>
+                                            <button name="approved" value="false" class="btn btn-sm btn-outline-danger">Tolak</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="badge @ReturnRequestStatus.BadgeClass(o.ReturnStatus)">@ReturnRequestStatus.Label(o.ReturnStatus)</span>
+                            }
+                        </td>
+                        <td>
+                            <form asp-action="UpdateStatus" method="post" class="d-flex gap-2" data-swal-confirm data-swal-title="Perbarui status pesanan?" data-swal-text="Status pesanan akan diubah." data-swal-confirm-text="Ya, perbarui">
+                                <input type="hidden" name="id" value="@o.Id" />
+                                <select name="status" class="form-select form-select-sm">
+                                    @foreach (var s in OrderStatus.All)
+                                    {
+                                        <option value="@s" selected="@(s == o.Status)">@s</option>
+                                    }
+                                </select>
+                                <button class="btn btn-sm btn-primary">Update</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

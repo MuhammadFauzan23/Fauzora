@@ -1,0 +1,16 @@
+@model Order
+@inject Fauzora.Services.SecureIdService SecureIds
+@{ ViewData["Title"] = "Ajukan Pengembalian"; }
+<div class="form-panel mx-auto">
+    <a asp-action="Details" asp-route-id="@SecureIds.Protect(Model.Id)" class="text-muted small">&larr; Kembali ke detail pesanan</a>
+    <h1 class="h3 mt-2">Ajukan Pengembalian</h1>
+    <p class="text-muted">Pesanan #@Model.OrderNumber · @Model.Total.ToRupiah()</p>
+    <div class="alert alert-info small">Jelaskan masalah produk dengan lengkap. Pengajuan akan diperiksa oleh pihak toko. Refund yang disetujui masih diproses manual oleh admin.</div>
+    <form asp-action="RequestReturn" method="post" data-swal-confirm data-swal-title="Ajukan pengembalian?" data-swal-text="Pengajuan akan dikirim ke pihak toko untuk diperiksa." data-swal-confirm-text="Ya, ajukan" data-swal-icon="warning">
+        <input type="hidden" name="OrderId" value="@Model.Id" />
+        <label class="form-label" for="reason">Alasan pengembalian</label>
+        <textarea id="reason" name="Reason" class="form-control mb-1" rows="6" minlength="10" maxlength="500" placeholder="Contoh: produk rusak saat diterima..." required></textarea>
+        <div class="form-text mb-3">Minimal 10 karakter, maksimal 500 karakter.</div>
+        <button class="btn btn-danger">Ajukan Pengembalian</button>
+    </form>
+</div>

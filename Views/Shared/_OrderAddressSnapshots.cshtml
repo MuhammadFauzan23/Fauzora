@@ -1,0 +1,90 @@
+@model OrderAddressSnapshotVm
+@if (Model.ShowCustomerAddress || Model.ShowSellerAddress)
+{
+    <div class="row g-3">
+        @if (Model.ShowCustomerAddress)
+        {
+            <div class="col-md-6">
+                <h3 class="h6">Alamat Pengiriman</h3>
+                @if (string.IsNullOrWhiteSpace(Model.Order.CustomerAddressContactName) || string.IsNullOrWhiteSpace(Model.Order.CustomerAddressStreet))
+                {
+                    <p class="text-muted small mb-0">Alamat tidak tersedia untuk pesanan lama.</p>
+                }
+                else
+                {
+                    <address class="order-address-content mb-0">
+                        <div class="order-address-line order-address-contact">
+                            <span class="order-address-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20c.4-3.5 2.7-5.3 6.5-5.3s6.1 1.8 6.5 5.3"/></svg></span>
+                            <strong>@Model.Order.CustomerAddressContactName</strong>
+                        </div>
+                        <div class="order-address-line">
+                            <span class="order-address-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3.8 10 3l1.5 4-2 1.4a15 15 0 0 0 6.1 6.1l1.4-2 4 1.5-.8 3c-.3 1.2-1.5 2-2.7 1.8A17.5 17.5 0 0 1 5.2 6.5C5 5.3 5.8 4.1 7 3.8Z"/></svg></span>
+                            <span>@Model.Order.CustomerAddressPhone</span>
+                        </div>
+                        <div class="order-address-line">
+                            <span class="order-address-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M9 20v-6h6v6"/></svg></span>
+                            <span>@Model.Order.CustomerAddressStreet</span>
+                        </div>
+                        <div class="order-address-line">
+                            <span class="order-address-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.2"/></svg></span>
+                            <span>@Model.Order.CustomerAddressVillage, @Model.Order.CustomerAddressDistrict</span>
+                        </div>
+                        <div class="order-address-line">
+                            <span class="order-address-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20V8l8-4 8 4v12M8 20v-6h8v6M8 9h.01M12 9h.01M16 9h.01"/></svg></span>
+                            <span>@Model.Order.CustomerAddressCity, @Model.Order.CustomerAddressProvince <span class="order-address-postal">@Model.Order.CustomerAddressPostalCode</span></span>
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(Model.Order.CustomerAddressDeliveryNote))
+                        {
+                            <div class="order-address-line order-address-note">
+                                <span class="order-address-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4.5h14v11H11l-5 4v-4H5z"/><path d="M8 8h8M8 11.5h5"/></svg></span>
+                                <span><span class="order-address-label">Catatan kurir:</span> @Model.Order.CustomerAddressDeliveryNote</span>
+                            </div>
+                        }
+                    </address>
+                }
+            </div>
+        }
+        @if (Model.ShowSellerAddress)
+        {
+            <div class="col-md-6">
+                <h3 class="h6">Alamat Asal Pengiriman</h3>
+                @if (string.IsNullOrWhiteSpace(Model.Order.SellerAddressContactName) || string.IsNullOrWhiteSpace(Model.Order.SellerAddressStreet))
+                {
+                    <p class="text-muted small mb-0">Alamat tidak tersedia untuk pesanan lama.</p>
+                }
+                else
+                {
+                    <address class="order-address-content mb-0">
+                        <div class="order-address-line order-address-contact">
+                            <span class="order-address-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20c.4-3.5 2.7-5.3 6.5-5.3s6.1 1.8 6.5 5.3"/></svg></span>
+                            <strong>@Model.Order.SellerAddressContactName</strong>
+                        </div>
+                        <div class="order-address-line">
+                            <span class="order-address-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3.8 10 3l1.5 4-2 1.4a15 15 0 0 0 6.1 6.1l1.4-2 4 1.5-.8 3c-.3 1.2-1.5 2-2.7 1.8A17.5 17.5 0 0 1 5.2 6.5C5 5.3 5.8 4.1 7 3.8Z"/></svg></span>
+                            <span>@Model.Order.SellerAddressPhone</span>
+                        </div>
+                        <div class="order-address-line">
+                            <span class="order-address-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M9 20v-6h6v6"/></svg></span>
+                            <span>@Model.Order.SellerAddressStreet</span>
+                        </div>
+                        <div class="order-address-line">
+                            <span class="order-address-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.2"/></svg></span>
+                            <span>@Model.Order.SellerAddressVillage, @Model.Order.SellerAddressDistrict</span>
+                        </div>
+                        <div class="order-address-line">
+                            <span class="order-address-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20V8l8-4 8 4v12M8 20v-6h8v6M8 9h.01M12 9h.01M16 9h.01"/></svg></span>
+                            <span>@Model.Order.SellerAddressCity, @Model.Order.SellerAddressProvince <span class="order-address-postal">@Model.Order.SellerAddressPostalCode</span></span>
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(Model.Order.SellerAddressDeliveryNote))
+                        {
+                            <div class="order-address-line order-address-note">
+                                <span class="order-address-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4.5h14v11H11l-5 4v-4H5z"/><path d="M8 8h8M8 11.5h5"/></svg></span>
+                                <span><span class="order-address-label">Catatan penjemputan:</span> @Model.Order.SellerAddressDeliveryNote</span>
+                            </div>
+                        }
+                    </address>
+                }
+            </div>
+        }
+    </div>
+}

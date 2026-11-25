@@ -1,0 +1,15 @@
+@model ProductFormVm
+@{ ViewData["Title"] = "Edit Produk"; }
+<h2 class="mb-3">Edit Produk</h2>
+<form asp-action="Edit" method="post" enctype="multipart/form-data" class="form-panel product-form-panel" data-swal-confirm data-swal-title="Simpan perubahan produk?" data-swal-text="Data produk akan diperbarui." data-swal-confirm-text="Ya, simpan">
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <partial name="_ProductForm" model="Model" />
+    <div class="form-check mb-3">
+        <input asp-for="IsActive" class="form-check-input" />
+        <label asp-for="IsActive" class="form-check-label"></label>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-primary">Simpan Perubahan</button>
+        <a asp-action="MyProducts" class="btn btn-outline-secondary">Batal</a>
+    </div>
+</form>

@@ -1,0 +1,14 @@
+[2026-11-25 14:17:21.147] [00004DE4] === Logging started ===
+[2026-11-25 14:17:21.155] [00004DE4] Executing: "C:\Program Files\dotnet\dotnet.exe" build --no-restore -p:UseAppHost=false -p:OutDir=C:\Temp\Fauzora-form-binding-check\, PID: 19940, PPID: 29624
+[2026-11-25 14:17:21.156] [00004DE4] IsElevated: False
+[2026-11-25 14:17:21.156] [00004DE4] Is64BitProcess: True
+[2026-11-25 14:17:21.156] [00004DE4] RebootPending: False
+[2026-11-25 14:17:21.156] [00004DE4] ProcessorArchitecture: amd64
+[2026-11-25 14:17:21.156] [00004DE4] HostArchitecture: x64
+[2026-11-25 14:17:21.156] [00004DE4] SdkDirectory: 10.0.402
+[2026-11-25 14:17:21.156] [00004DE4] VerifySignatures: False
+[2026-11-25 14:17:21.156] [00004DE4] SDK feature band: 10.0.400
+[2026-11-25 14:17:36.979] [00004DE4] Shutting down
+[2026-11-25 14:17:36.979] [00004DE4] Shutdown completed.
+[2026-11-25 14:17:36.979] [00004DE4] Restart required: False
+[2026-11-25 14:17:36.980] [00004DE4] === Logging ended ===

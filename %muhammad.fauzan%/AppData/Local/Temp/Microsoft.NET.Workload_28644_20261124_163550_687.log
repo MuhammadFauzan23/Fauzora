@@ -1,0 +1,14 @@
+[2026-11-24 16:35:50.689] [00006FE4] === Logging started ===
+[2026-11-24 16:35:50.696] [00006FE4] Executing: "C:\Program Files\dotnet\dotnet.exe" build C:\xampp\htdocs\Fauzora\Fauzora.csproj --no-restore /t:_ExtractUserSecretsMetadata /p:_UserSecretsMetadataFile=C:\xampp\htdocs\Fauzora\%muhammad.fauzan%\AppData\Local\Temp\ueoymsfn.zer /p:Configuration=Debug "/p:CustomAfterMicrosoftCommonTargets=C:\Program Files\dotnet\sdk\10.0.402\DotnetTools\dotnet-user-secrets\10.0.13-servicing.26504.104\tools\net10.0\any\assets\SecretManager.targets" "/p:CustomAfterMicrosoftCommonCrossTargetingTargets=C:\Program Files\dotnet\sdk\10.0.402\DotnetTools\dotnet-user-secrets\10.0.13-servicing.26504.104\tools\net10.0\any\assets\SecretManager.targets" -verbosity:detailed, PID: 28644, PPID: 28548
+[2026-11-24 16:35:50.698] [00006FE4] IsElevated: False
+[2026-11-24 16:35:50.698] [00006FE4] Is64BitProcess: True
+[2026-11-24 16:35:50.698] [00006FE4] RebootPending: False
+[2026-11-24 16:35:50.698] [00006FE4] ProcessorArchitecture: amd64
+[2026-11-24 16:35:50.698] [00006FE4] HostArchitecture: x64
+[2026-11-24 16:35:50.698] [00006FE4] SdkDirectory: 10.0.402
+[2026-11-24 16:35:50.698] [00006FE4] VerifySignatures: False
+[2026-11-24 16:35:50.698] [00006FE4] SDK feature band: 10.0.400
+[2026-11-24 16:35:51.445] [00006FE4] Shutting down
+[2026-11-24 16:35:51.445] [00006FE4] Shutdown completed.
+[2026-11-24 16:35:51.445] [00006FE4] Restart required: False
+[2026-11-24 16:35:51.445] [00006FE4] === Logging ended ===

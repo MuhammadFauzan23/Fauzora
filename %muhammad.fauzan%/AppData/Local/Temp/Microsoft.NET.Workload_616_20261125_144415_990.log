@@ -1,0 +1,14 @@
+[2026-11-25 14:44:15.993] [00000268] === Logging started ===
+[2026-11-25 14:44:16.000] [00000268] Executing: "C:\Program Files\dotnet\dotnet.exe" run --project C:\Users\muhammad.fauzan\AppData\Local\Temp\fauzora-db-audit\FauzoraDbAudit.csproj, PID: 616, PPID: 29624
+[2026-11-25 14:44:16.002] [00000268] IsElevated: False
+[2026-11-25 14:44:16.002] [00000268] Is64BitProcess: True
+[2026-11-25 14:44:16.002] [00000268] RebootPending: False
+[2026-11-25 14:44:16.002] [00000268] ProcessorArchitecture: amd64
+[2026-11-25 14:44:16.002] [00000268] HostArchitecture: x64
+[2026-11-25 14:44:16.002] [00000268] SdkDirectory: 10.0.402
+[2026-11-25 14:44:16.002] [00000268] VerifySignatures: False
+[2026-11-25 14:44:16.002] [00000268] SDK feature band: 10.0.400
+[2026-11-25 14:44:28.196] [00000268] Shutting down
+[2026-11-25 14:44:28.196] [00000268] Shutdown completed.
+[2026-11-25 14:44:28.196] [00000268] Restart required: False
+[2026-11-25 14:44:28.197] [00000268] === Logging ended ===

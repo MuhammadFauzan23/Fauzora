@@ -1,0 +1,14 @@
+[2026-11-24 08:44:12.214] [000002FC] === Logging started ===
+[2026-11-24 08:44:12.220] [000002FC] Executing: "C:\Program Files\dotnet\dotnet.exe" build --nologo -o %muhammad.fauzan%\AppData\Local\Temp\fauzora-verify, PID: 764, PPID: 20064
+[2026-11-24 08:44:12.221] [000002FC] IsElevated: False
+[2026-11-24 08:44:12.221] [000002FC] Is64BitProcess: True
+[2026-11-24 08:44:12.221] [000002FC] RebootPending: False
+[2026-11-24 08:44:12.221] [000002FC] ProcessorArchitecture: amd64
+[2026-11-24 08:44:12.221] [000002FC] HostArchitecture: x64
+[2026-11-24 08:44:12.221] [000002FC] SdkDirectory: 10.0.402
+[2026-11-24 08:44:12.221] [000002FC] VerifySignatures: False
+[2026-11-24 08:44:12.221] [000002FC] SDK feature band: 10.0.400
+[2026-11-24 08:44:17.605] [000002FC] Shutting down
+[2026-11-24 08:44:17.605] [000002FC] Shutdown completed.
+[2026-11-24 08:44:17.605] [000002FC] Restart required: False
+[2026-11-24 08:44:17.605] [000002FC] === Logging ended ===

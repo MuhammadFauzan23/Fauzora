@@ -1,0 +1,53 @@
+@model SellerDashboardVm
+@{
+    ViewData["Title"] = "Seller Dashboard";
+}
+
+<div class="page-heading">
+    <div>
+        <p class="eyebrow">Ringkasan Toko</p>
+        <h1>Seller Dashboard</h1>
+        <p class="text-muted mb-0">Pantau penjualan dan pesanan tokomu.</p>
+    </div>
+</div>
+
+<div class="row g-3 seller-report-stats">
+    <div class="col-6 col-xxl"><div class="stat-card h-100"><small>Total Penjualan</small><h2 class="seller-revenue-value">@Model.Revenue.ToRupiah()</h2><span class="seller-stat-note">Tidak termasuk order batal/retur disetujui</span></div></div>
+    <div class="col-6 col-xxl"><div class="stat-card h-100"><small>Pesanan Valid</small><h2>@Model.Orders</h2><span class="seller-stat-note">Tidak termasuk order batal/retur disetujui</span></div></div>
+    <div class="col-6 col-xxl"><div class="stat-card h-100"><small>Produk Terjual</small><h2>@Model.UnitsSold</h2><span class="seller-stat-note">Akumulasi unit dari order valid</span></div></div>
+    <div class="col-6 col-xxl"><div class="stat-card h-100"><small>Produk Toko</small><h2>@Model.Products</h2><span class="seller-stat-note">Termasuk produk yang sedang nonaktif</span></div></div>
+    <div class="col-6 col-xxl"><div class="stat-card h-100"><small>Total Pengembalian</small><h2>@Model.ReturnRequests</h2><span class="seller-stat-note">@Model.PendingReturns pengajuan menunggu keputusan</span></div></div>
+</div>
+
+<section class="panel seller-sales-report mt-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+        <div>
+            <h2 class="h5 mb-1">Laporan Penjualan</h2>
+            <p class="text-muted small mb-0">Nilai penjualan per bulan selama enam bulan terakhir.</p>
+        </div>
+        <div class="seller-order-summary">
+            <span><i class="seller-order-dot seller-order-processing"></i> Perlu diproses <strong>@Model.ProcessingOrders</strong></span>
+            <span><i class="seller-order-dot seller-order-shipped"></i> Dalam pengiriman <strong>@Model.ShippedOrders</strong></span>
+        </div>
+    </div>
+
+    <div class="seller-sales-chart" role="img" aria-label="Grafik nilai penjualan enam bulan terakhir">
+        @foreach (var month in Model.MonthlySales)
+        {
+            <div class="seller-sales-month" title="@month.Label: @month.Revenue.ToRupiah()">
+                <span class="seller-sales-amount">@month.Revenue.ToRupiah()</span>
+                <div class="seller-sales-track">
+                    <div class="seller-sales-bar" style="height: @month.BarHeightPercent%"></div>
+                </div>
+                <span class="seller-sales-label">@month.Label</span>
+            </div>
+        }
+    </div>
+</section>
+
+<div class="d-flex flex-wrap gap-2 mt-4">
+    <a asp-controller="Seller" asp-action="Orders" class="btn btn-primary">Kelola Pesanan</a>
+    <a asp-controller="Seller" asp-action="Returns" class="btn btn-outline-primary">Kelola Pengembalian (@Model.PendingReturns)</a>
+    <a asp-controller="Product" asp-action="MyProducts" class="btn btn-outline-primary">Kelola Produk</a>
+    <a asp-controller="Account" asp-action="Profile" class="btn btn-outline-primary">Profil Toko</a>
+</div>

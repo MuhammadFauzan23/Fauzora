@@ -1,0 +1,162 @@
+@model ProfileVm
+@{
+    ViewData["Title"] = "Profil";
+    var canEditCity = User.IsInRole("Seller");
+    var isCustomer = User.IsInRole("Customer");
+    var isSeller = User.IsInRole("Seller");
+}
+<div class="form-panel profile-page mx-auto">
+    <div class="profile-page-heading">
+        <div>
+            <p class="eyebrow mb-1">Pengaturan akun</p>
+            <h1 class="section-title mb-1">Profil Saya</h1>
+            <p class="text-muted mb-0">Atur informasi akun dan alamat untuk aktivitas Fauzora.</p>
+        </div>
+        <div class="profile-photo-preview">
+            @if (!string.IsNullOrWhiteSpace(Model.CurrentImageUrl))
+            {
+                <img src="@Model.CurrentImageUrl" alt="Foto profil @Model.FullName" />
+            }
+            else
+            {
+                <span>@(string.IsNullOrWhiteSpace(Model.FullName) ? "?" : char.ToUpperInvariant(Model.FullName[0]))</span>
+            }
+        </div>
+    </div>
+
+    <form asp-action="Profile" method="post" enctype="multipart/form-data" data-swal-confirm data-swal-title="Simpan perubahan profil?" data-swal-text="Data profil akan diperbarui." data-swal-confirm-text="Ya, simpan">
+        <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+        <section class="profile-section">
+            <div class="profile-section-heading">
+                <div><span class="profile-step">01</span><h2>Informasi akun</h2></div>
+                <p>Informasi dasar yang tampil pada akun Anda.</p>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="FullName" class="form-label"></label>
+                    <input asp-for="FullName" class="form-control" autocomplete="name" />
+                    <span asp-validation-for="FullName" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="ProfileImage" class="form-label"></label>
+                    <input asp-for="ProfileImage" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+                    <span asp-validation-for="ProfileImage" class="text-danger small"></span>
+                    <div class="form-text">JPG, PNG, WEBP · Maksimal 2 MB.</div>
+                </div>
+            </div>
+            @if (canEditCity)
+            {
+                <div class="mt-3">
+                    <label asp-for="City" class="form-label"></label>
+                    <input asp-for="City" class="form-control" placeholder="Contoh: Bandung" autocomplete="address-level2" />
+                    <span asp-validation-for="City" class="text-danger small"></span>
+                    <div class="form-text">Kota ini ditampilkan sebagai asal pengiriman produk Anda.</div>
+                </div>
+            }
+        </section>
+
+        @if (isCustomer)
+        {
+            <section class="profile-section profile-address-section" data-region-cascade data-address-kind="customer">
+                <div class="profile-section-heading">
+                    <div><span class="profile-step">02</span><h2>Alamat pengiriman</h2></div>
+                    <p>Alamat tujuan pesanan. Pilih wilayah secara berurutan; alamat tersimpan sebagai snapshot saat checkout.</p>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-6"><label asp-for="CustomerAddressContactName" class="form-label"></label><input asp-for="CustomerAddressContactName" class="form-control" autocomplete="name" /><span asp-validation-for="CustomerAddressContactName" class="text-danger small"></span></div>
+                    <div class="col-md-6"><label asp-for="CustomerAddressPhone" class="form-label"></label><input asp-for="CustomerAddressPhone" class="form-control" autocomplete="tel" /><span asp-validation-for="CustomerAddressPhone" class="text-danger small"></span></div>
+                    <div class="col-12"><label asp-for="CustomerAddressStreet" class="form-label"></label><textarea asp-for="CustomerAddressStreet" class="form-control" rows="2" autocomplete="street-address"></textarea><span asp-validation-for="CustomerAddressStreet" class="text-danger small"></span></div>
+                </div>
+                <div class="region-cascade" data-region-root>
+                    <p class="region-cascade-title">Wilayah alamat <span>Ikuti urutan pilihan berikut</span></p>
+                    <div class="row g-3 region-select-grid">
+                        <div class="col-sm-6 col-lg-3">
+                            <label for="customer-province" class="form-label"><span>1</span> Provinsi</label>
+                            <input asp-for="CustomerAddressProvince" type="hidden" data-region-value="province" />
+                            <select id="customer-province" class="form-select" data-region-select="province" data-region-initial="@Model.CustomerAddressProvince" autocomplete="address-level1"><option value="">Pilih provinsi</option></select>
+                            <span asp-validation-for="CustomerAddressProvince" class="text-danger small"></span>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <label for="customer-city" class="form-label"><span>2</span> Kota/Kabupaten</label>
+                            <input asp-for="CustomerAddressCity" type="hidden" data-region-value="city" />
+                            <select id="customer-city" class="form-select" data-region-select="city" data-region-initial="@Model.CustomerAddressCity" autocomplete="address-level2" disabled><option value="">Pilih kota/kabupaten</option></select>
+                            <span asp-validation-for="CustomerAddressCity" class="text-danger small"></span>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <label for="customer-district" class="form-label"><span>3</span> Kecamatan</label>
+                            <input asp-for="CustomerAddressDistrict" type="hidden" data-region-value="district" />
+                            <select id="customer-district" class="form-select" data-region-select="district" data-region-initial="@Model.CustomerAddressDistrict" autocomplete="address-level3" disabled><option value="">Pilih kecamatan</option></select>
+                            <span asp-validation-for="CustomerAddressDistrict" class="text-danger small"></span>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <label for="customer-village" class="form-label"><span>4</span> Kelurahan/Desa</label>
+                            <input asp-for="CustomerAddressVillage" type="hidden" data-region-value="village" />
+                            <select id="customer-village" class="form-select" data-region-select="village" data-region-initial="@Model.CustomerAddressVillage" autocomplete="address-level4" disabled><option value="">Pilih kelurahan/desa</option></select>
+                            <span asp-validation-for="CustomerAddressVillage" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <p class="region-cascade-status" role="status" aria-live="polite"><span data-region-status>Memuat data wilayah…</span> <button class="btn btn-link btn-sm p-0" type="button" data-region-retry hidden>Coba lagi</button></p>
+                </div>
+                <div class="row g-3 mt-0">
+                    <div class="col-md-6"><label asp-for="CustomerAddressPostalCode" class="form-label"></label><input asp-for="CustomerAddressPostalCode" class="form-control" autocomplete="postal-code" /><span asp-validation-for="CustomerAddressPostalCode" class="text-danger small"></span></div>
+                    <div class="col-12"><label asp-for="CustomerAddressDeliveryNote" class="form-label"></label><textarea asp-for="CustomerAddressDeliveryNote" class="form-control" rows="2"></textarea><span asp-validation-for="CustomerAddressDeliveryNote" class="text-danger small"></span></div>
+                </div>
+            </section>
+        }
+
+        @if (isSeller)
+        {
+            <section class="profile-section profile-address-section" data-region-cascade data-address-kind="seller">
+                <div class="profile-section-heading">
+                    <div><span class="profile-step">@(isCustomer ? "03" : "02")</span><h2>Alamat asal pengiriman toko</h2></div>
+                    <p>Alamat pengambilan paket dari tokomu. Pilih wilayah berurutan agar alamat mudah dikenali.</p>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-6"><label asp-for="SellerAddressContactName" class="form-label"></label><input asp-for="SellerAddressContactName" class="form-control" autocomplete="name" /><span asp-validation-for="SellerAddressContactName" class="text-danger small"></span></div>
+                    <div class="col-md-6"><label asp-for="SellerAddressPhone" class="form-label"></label><input asp-for="SellerAddressPhone" class="form-control" autocomplete="tel" /><span asp-validation-for="SellerAddressPhone" class="text-danger small"></span></div>
+                    <div class="col-12"><label asp-for="SellerAddressStreet" class="form-label"></label><textarea asp-for="SellerAddressStreet" class="form-control" rows="2" autocomplete="street-address"></textarea><span asp-validation-for="SellerAddressStreet" class="text-danger small"></span></div>
+                </div>
+                <div class="region-cascade" data-region-root>
+                    <p class="region-cascade-title">Wilayah asal <span>Ikuti urutan pilihan berikut</span></p>
+                    <div class="row g-3 region-select-grid">
+                        <div class="col-sm-6 col-lg-3">
+                            <label for="seller-province" class="form-label"><span>1</span> Provinsi</label>
+                            <input asp-for="SellerAddressProvince" type="hidden" data-region-value="province" />
+                            <select id="seller-province" class="form-select" data-region-select="province" data-region-initial="@Model.SellerAddressProvince" autocomplete="address-level1"><option value="">Pilih provinsi</option></select>
+                            <span asp-validation-for="SellerAddressProvince" class="text-danger small"></span>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <label for="seller-city" class="form-label"><span>2</span> Kota/Kabupaten</label>
+                            <input asp-for="SellerAddressCity" type="hidden" data-region-value="city" />
+                            <select id="seller-city" class="form-select" data-region-select="city" data-region-initial="@Model.SellerAddressCity" autocomplete="address-level2" disabled><option value="">Pilih kota/kabupaten</option></select>
+                            <span asp-validation-for="SellerAddressCity" class="text-danger small"></span>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <label for="seller-district" class="form-label"><span>3</span> Kecamatan</label>
+                            <input asp-for="SellerAddressDistrict" type="hidden" data-region-value="district" />
+                            <select id="seller-district" class="form-select" data-region-select="district" data-region-initial="@Model.SellerAddressDistrict" autocomplete="address-level3" disabled><option value="">Pilih kecamatan</option></select>
+                            <span asp-validation-for="SellerAddressDistrict" class="text-danger small"></span>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <label for="seller-village" class="form-label"><span>4</span> Kelurahan/Desa</label>
+                            <input asp-for="SellerAddressVillage" type="hidden" data-region-value="village" />
+                            <select id="seller-village" class="form-select" data-region-select="village" data-region-initial="@Model.SellerAddressVillage" autocomplete="address-level4" disabled><option value="">Pilih kelurahan/desa</option></select>
+                            <span asp-validation-for="SellerAddressVillage" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <p class="region-cascade-status" role="status" aria-live="polite"><span data-region-status>Memuat data wilayah…</span> <button class="btn btn-link btn-sm p-0" type="button" data-region-retry hidden>Coba lagi</button></p>
+                </div>
+                <div class="row g-3 mt-0">
+                    <div class="col-md-6"><label asp-for="SellerAddressPostalCode" class="form-label"></label><input asp-for="SellerAddressPostalCode" class="form-control" autocomplete="postal-code" /><span asp-validation-for="SellerAddressPostalCode" class="text-danger small"></span></div>
+                    <div class="col-12"><label asp-for="SellerAddressDeliveryNote" class="form-label"></label><textarea asp-for="SellerAddressDeliveryNote" class="form-control" rows="2"></textarea><span asp-validation-for="SellerAddressDeliveryNote" class="text-danger small"></span></div>
+                </div>
+            </section>
+        }
+
+        <div class="profile-form-actions">
+            <span>Alamat dapat dilengkapi bertahap, tetapi harus lengkap sebelum checkout.</span>
+            <button class="btn btn-primary">Simpan perubahan</button>
+        </div>
+    </form>
+</div>

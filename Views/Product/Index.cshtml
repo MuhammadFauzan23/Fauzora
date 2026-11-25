@@ -1,0 +1,158 @@
+@model CatalogVm
+@inject Fauzora.Services.SecureIdService SecureIds
+@{ ViewData["Title"] = "Produk"; }
+@if (Model.Query is null && Model.CategoryId is null)
+{
+    <div class="featured-row">
+    @if (Model.NewestProducts.Count > 0)
+    {
+        <section class="featured-section" aria-labelledby="newest-products-title">
+            <div class="featured-heading">
+                <div>
+                    <p class="eyebrow">Baru hadir</p>
+                    <h2 id="newest-products-title">Produk terbaru</h2>
+                </div>
+                <span>5 pilihan terbaru</span>
+            </div>
+            <div id="newestProductsCarousel" class="carousel slide featured-carousel" data-bs-ride="false">
+                <div class="carousel-inner">
+                    @for (var i = 0; i < Model.NewestProducts.Count; i++)
+                    {
+                        var product = Model.NewestProducts[i];
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <a class="featured-card" asp-action="Details" asp-route-id="@SecureIds.Protect(product.Id)">
+                                <div class="featured-image">
+                                    @if (!string.IsNullOrWhiteSpace(product.ImageUrl))
+                                    {
+                                        <img src="@product.ImageUrl" alt="@product.Name" />
+                                    }
+                                    else
+                                    {
+                                        <span>Fauzora</span>
+                                    }
+                                </div>
+                                <div class="featured-info">
+                                    <strong>@product.Name</strong>
+                                    <span class="price">@product.Price.ToRupiah()</span>
+                                    <small>@product.Category?.Name</small>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                </div>
+                @if (Model.NewestProducts.Count > 1)
+                {
+                    <button class="carousel-control-prev" type="button" data-bs-target="#newestProductsCarousel" data-bs-slide="prev" aria-label="Produk terbaru sebelumnya"><span class="carousel-control-prev-icon"></span></button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#newestProductsCarousel" data-bs-slide="next" aria-label="Produk terbaru berikutnya"><span class="carousel-control-next-icon"></span></button>
+                }
+            </div>
+        </section>
+    }
+
+    @if (Model.BestSellingProducts.Count > 0)
+    {
+        <section class="featured-section" aria-labelledby="best-selling-products-title">
+            <div class="featured-heading">
+                <div>
+                    <p class="eyebrow">Paling diminati</p>
+                    <h2 id="best-selling-products-title">Best seller</h2>
+                </div>
+                <span>Favorit pelanggan</span>
+            </div>
+            <div id="bestSellingProductsCarousel" class="carousel slide featured-carousel" data-bs-ride="false">
+                <div class="carousel-inner">
+                    @for (var i = 0; i < Model.BestSellingProducts.Count; i++)
+                    {
+                        var product = Model.BestSellingProducts[i];
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <a class="featured-card" asp-action="Details" asp-route-id="@SecureIds.Protect(product.Id)">
+                                <div class="featured-image">
+                                    @if (!string.IsNullOrWhiteSpace(product.ImageUrl))
+                                    {
+                                        <img src="@product.ImageUrl" alt="@product.Name" />
+                                    }
+                                    else
+                                    {
+                                        <span>Fauzora</span>
+                                    }
+                                </div>
+                                <div class="featured-info">
+                                    <strong>@product.Name</strong>
+                                    <span class="price">@product.Price.ToRupiah()</span>
+                                    <small>@product.RatingCount ulasan</small>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                </div>
+                @if (Model.BestSellingProducts.Count > 1)
+                {
+                    <button class="carousel-control-prev" type="button" data-bs-target="#bestSellingProductsCarousel" data-bs-slide="prev" aria-label="Best seller sebelumnya"><span class="carousel-control-prev-icon"></span></button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#bestSellingProductsCarousel" data-bs-slide="next" aria-label="Best seller berikutnya"><span class="carousel-control-next-icon"></span></button>
+                }
+            </div>
+        </section>
+    }
+    </div>
+}
+
+<section class="catalog-head">
+    <div>
+        <p class="eyebrow">Belanja lebih mudah</p>
+        <h1>Temukan produk pilihanmu</h1>
+        <p class="catalog-subtitle">Harga bersahabat, pilihan beragam, langsung dari seller Fauzora.</p>
+    </div>
+    <span class="catalog-count">@Model.Products.Count produk</span>
+</section>
+<nav class="category-bar" aria-label="Kategori produk">
+    <a class="category-link @(Model.CategoryId is null ? "active" : "")" asp-action="Index" asp-route-q="@Model.Query">Semua</a>
+    @foreach (var c in Model.Categories)
+    {
+        <a class="category-link @(Model.CategoryId == c.Id ? "active" : "")" asp-action="Index" asp-route-categoryId="@c.Id" asp-route-q="@Model.Query">@c.Name</a>
+    }
+</nav>
+@if (!string.IsNullOrWhiteSpace(Model.Query))
+{
+    <div class="result-line">Hasil pencarian untuk <strong>"@Model.Query"</strong></div>
+}
+@if (!Model.Products.Any())
+{
+    <div class="empty-state">Produk tidak ditemukan.</div>
+}
+else
+{
+    <div class="product-grid">
+        @foreach (var p in Model.Products)
+        {
+            <div>
+                <a class="product-card" asp-action="Details" asp-route-id="@SecureIds.Protect(p.Id)">
+                    <div class="product-thumb">
+                        @if (!string.IsNullOrWhiteSpace(p.ImageUrl))
+                        {
+                            <img src="@p.ImageUrl" alt="@p.Name" loading="lazy" />
+                        }
+                        else
+                        {
+                            <div class="product-placeholder">Fauzora</div>
+                        }
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">@p.Name</div>
+                        <div class="product-meta">
+                            <span class="price">@p.Price.ToRupiah()</span>
+                            <small>Sisa @p.Stock</small>
+                        </div>
+                        <div class="product-rating">
+                            <span class="stars stars-sm" style="--rating: @p.RatingAverage.ToRatingNumber()"></span>
+                            <small>@p.RatingCount</small>
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(p.Seller?.City))
+                        {
+                            <small class="product-city">@p.Seller.City</small>
+                        }
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+}

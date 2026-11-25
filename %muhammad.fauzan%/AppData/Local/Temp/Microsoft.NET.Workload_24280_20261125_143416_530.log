@@ -1,0 +1,14 @@
+[2026-11-25 14:34:16.534] [00005ED8] === Logging started ===
+[2026-11-25 14:34:16.540] [00005ED8] Executing: "C:\Program Files\dotnet\dotnet.exe" build --no-restore -p:UseAppHost=false -p:OutDir=C:\Temp\Fauzora-id-binding-fix-2\, PID: 24280, PPID: 29624
+[2026-11-25 14:34:16.542] [00005ED8] IsElevated: False
+[2026-11-25 14:34:16.542] [00005ED8] Is64BitProcess: True
+[2026-11-25 14:34:16.542] [00005ED8] RebootPending: False
+[2026-11-25 14:34:16.542] [00005ED8] ProcessorArchitecture: amd64
+[2026-11-25 14:34:16.542] [00005ED8] HostArchitecture: x64
+[2026-11-25 14:34:16.542] [00005ED8] SdkDirectory: 10.0.402
+[2026-11-25 14:34:16.542] [00005ED8] VerifySignatures: False
+[2026-11-25 14:34:16.542] [00005ED8] SDK feature band: 10.0.400
+[2026-11-25 14:34:20.086] [00005ED8] Shutting down
+[2026-11-25 14:34:20.086] [00005ED8] Shutdown completed.
+[2026-11-25 14:34:20.086] [00005ED8] Restart required: False
+[2026-11-25 14:34:20.172] [00005ED8] === Logging ended ===

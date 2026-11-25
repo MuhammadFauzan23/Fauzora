@@ -1,0 +1,14 @@
+[2026-11-25 15:57:55.565] [00005F48] === Logging started ===
+[2026-11-25 15:57:55.572] [00005F48] Executing: "C:\Program Files\dotnet\dotnet.exe" run --project C:\Users\muhammad.fauzan\AppData\Local\Temp\fauzora-upload-smoke\UploadSmoke.csproj, PID: 24392, PPID: 29624
+[2026-11-25 15:57:55.573] [00005F48] IsElevated: False
+[2026-11-25 15:57:55.573] [00005F48] Is64BitProcess: True
+[2026-11-25 15:57:55.573] [00005F48] RebootPending: False
+[2026-11-25 15:57:55.573] [00005F48] ProcessorArchitecture: amd64
+[2026-11-25 15:57:55.573] [00005F48] HostArchitecture: x64
+[2026-11-25 15:57:55.573] [00005F48] SdkDirectory: 10.0.402
+[2026-11-25 15:57:55.573] [00005F48] VerifySignatures: False
+[2026-11-25 15:57:55.573] [00005F48] SDK feature band: 10.0.400
+[2026-11-25 15:58:26.255] [00005F48] Shutting down
+[2026-11-25 15:58:26.255] [00005F48] Shutdown completed.
+[2026-11-25 15:58:26.255] [00005F48] Restart required: False
+[2026-11-25 15:58:26.255] [00005F48] === Logging ended ===

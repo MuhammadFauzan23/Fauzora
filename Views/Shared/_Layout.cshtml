@@ -1,0 +1,116 @@
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Fauzora</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+    <link href="~/css/site.css" rel="stylesheet" asp-append-version="true" />
+    <link rel="icon" type="image/svg+xml" href="~/img/logo.svg" />
+</head>
+<body>
+<header class="site-header">
+    <div class="container mainbar">
+        <a class="brand notranslate" translate="no" asp-controller="Product" asp-action="Index">
+            <img src="~/img/logo.svg" alt="" width="36" height="36" />Fauzora
+        </a>
+        <form class="search" asp-controller="Product" asp-action="Index" method="get" role="search">
+            <input type="search" name="q" value="@Context.Request.Query["q"]" placeholder="Cari produk" aria-label="Cari produk" />
+            <button aria-label="Cari">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
+            </button>
+        </form>
+        <div class="header-actions">
+            <select id="lang-select" class="lang-select notranslate" translate="no" aria-label="Bahasa">
+                <option value="id">Indonesia</option>
+                <option value="en">English</option>
+                <option value="ms">Melayu</option>
+                <option value="zh-CN">中文</option>
+                <option value="ja">日本語</option>
+            </select>
+            @if (User.IsInRole("Customer"))
+            {
+                <a class="cart-link" asp-controller="Cart" asp-action="Index" aria-label="Keranjang">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.4 10.2a1.5 1.5 0 0 0 1.46 1.15h7.9a1.5 1.5 0 0 0 1.45-1.1L20 8H6"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg>
+                    @await Component.InvokeAsync("CartCount")
+                </a>
+            }
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                var currentUser = await UserManager.GetUserAsync(User);
+                var displayName = string.IsNullOrWhiteSpace(currentUser?.FullName)
+                    ? User.Identity.Name ?? "?"
+                    : currentUser.FullName;
+                <div class="dropdown">
+                    <button class="account-btn notranslate" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        @if (!string.IsNullOrWhiteSpace(currentUser?.ProfileImageUrl))
+                        {
+                            <img class="avatar avatar-image" src="@currentUser.ProfileImageUrl" alt="Foto @displayName" />
+                        }
+                        else
+                        {
+                            <span class="avatar">@char.ToUpperInvariant(displayName[0])</span>
+                        }
+                        <span class="account-name d-none d-md-inline">@displayName</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile">Profil</a></li>
+                        @if (User.IsInRole("Customer"))
+                        {
+                            <li><a class="dropdown-item" asp-controller="Order" asp-action="Index">Pesanan Saya</a></li>
+                        }
+                        @if (User.IsInRole("Seller"))
+                        {
+                            <li><a class="dropdown-item" asp-controller="Seller" asp-action="Index">Seller Dashboard</a></li>
+                            <li><a class="dropdown-item" asp-controller="Seller" asp-action="Orders">Pesanan Toko</a></li>
+                            <li><a class="dropdown-item" asp-controller="Seller" asp-action="Returns">Pengembalian</a></li>
+                            <li><a class="dropdown-item" asp-controller="Product" asp-action="MyProducts">Produk Saya</a></li>
+                        }
+                        @if (User.IsAdmin())
+                        {
+                            <li><a class="dropdown-item" asp-controller="Admin" asp-action="Index">Kelola Akun &amp; Role</a></li>
+                            <li><a class="dropdown-item" asp-controller="Admin" asp-action="Categories">Kelola Kategori</a></li>
+                        }
+                        <li><hr class="dropdown-divider" /></li>
+                        <li>
+                            <form asp-controller="Account" asp-action="Logout" method="post" data-swal-confirm data-swal-title="Keluar dari akun?" data-swal-text="Anda perlu login kembali untuk mengakses akun ini." data-swal-confirm-text="Ya, logout">
+                                <button class="dropdown-item">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            }
+            else
+            {
+                <a class="btn btn-sm btn-outline-primary" asp-controller="Account" asp-action="Login">Login</a>
+            }
+        </div>
+    </div>
+</header>
+
+<main class="container py-3">
+    @if (TempData["Success"] is string success)
+    {
+        <div data-swal-toast data-toast-type="success" data-toast-message="@success"></div>
+    }
+    @if (TempData["Error"] is string error)
+    {
+        <div data-swal-toast data-toast-type="warning" data-toast-message="@error"></div>
+    }
+    @RenderBody()
+</main>
+
+<footer class="text-center small py-4">&copy; @DateTime.Now.Year Fauzora</footer>
+
+<div id="google_translate_element" hidden></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

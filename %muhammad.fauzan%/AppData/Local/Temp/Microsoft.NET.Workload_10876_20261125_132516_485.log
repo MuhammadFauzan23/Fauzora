@@ -1,0 +1,14 @@
+[2026-11-25 13:25:16.487] [00002A7C] === Logging started ===
+[2026-11-25 13:25:16.495] [00002A7C] Executing: "C:\Program Files\dotnet\dotnet.exe" build --no-restore -p:UseAppHost=false -p:OutDir=C:\Temp\Fauzora-visual-check\, PID: 10876, PPID: 29624
+[2026-11-25 13:25:16.496] [00002A7C] IsElevated: False
+[2026-11-25 13:25:16.496] [00002A7C] Is64BitProcess: True
+[2026-11-25 13:25:16.496] [00002A7C] RebootPending: False
+[2026-11-25 13:25:16.496] [00002A7C] ProcessorArchitecture: amd64
+[2026-11-25 13:25:16.496] [00002A7C] HostArchitecture: x64
+[2026-11-25 13:25:16.496] [00002A7C] SdkDirectory: 10.0.402
+[2026-11-25 13:25:16.496] [00002A7C] VerifySignatures: False
+[2026-11-25 13:25:16.496] [00002A7C] SDK feature band: 10.0.400
+[2026-11-25 13:25:19.809] [00002A7C] Shutting down
+[2026-11-25 13:25:19.810] [00002A7C] Shutdown completed.
+[2026-11-25 13:25:19.810] [00002A7C] Restart required: False
+[2026-11-25 13:25:19.810] [00002A7C] === Logging ended ===

@@ -1,0 +1,71 @@
+@model AdminUserListVm
+@{ ViewData["Title"] = "Kelola Akun"; }
+<section class="catalog-head">
+    <div>
+        <p class="eyebrow">Administrasi Fauzora</p>
+        <h1>Kelola Akun &amp; Role</h1>
+        <p class="catalog-subtitle">Admin hanya mengatur akses akun. Perubahan akses akan mengakhiri sesi pengguna terkait.</p>
+    </div>
+    <span class="catalog-count">@Model.Users.Count akun</span>
+</section>
+<form asp-action="Index" method="get" class="search mb-3" role="search">
+    <input type="search" name="search" value="@Model.Search" placeholder="Cari nama atau email" aria-label="Cari akun" />
+    <button type="submit" aria-label="Cari akun">Cari</button>
+</form>
+<div class="table-responsive panel">
+    <table class="table align-middle mb-0">
+        <thead><tr><th>Akun</th><th>Role</th><th>Status</th><th>Atur role</th><th>Aksi</th></tr></thead>
+        <tbody>
+        @foreach (var account in Model.Users)
+        {
+            var isSelf = account.Id == User.GetUserId();
+            var isAdmin = account.Role == "Admin";
+            <tr>
+                <td><strong>@account.Name</strong><br /><small class="text-muted">@account.Email</small></td>
+                <td><span class="badge @(isAdmin ? "text-bg-primary" : "text-bg-secondary")">@account.Role</span></td>
+                <td><span class="badge @(account.IsActive ? "text-bg-success" : "text-bg-danger")">@(account.IsActive ? "Aktif" : "Nonaktif")</span></td>
+                <td>
+                    <form asp-action="SetRole" method="post" class="d-flex gap-2">
+                        <input type="hidden" name="userId" value="@account.Id" />
+                        <input type="hidden" name="search" value="@Model.Search" />
+                        <select name="role" class="form-select form-select-sm" aria-label="Role untuk @account.Email" disabled="@(isSelf ? "disabled" : null)">
+                            <option value="" selected="@(account.Role == "-" ? "selected" : null)">Tanpa role</option>
+                            <option value="Customer" selected="@(account.Role == "Customer" ? "selected" : null)">Customer</option>
+                            <option value="Seller" selected="@(account.Role == "Seller" ? "selected" : null)">Seller</option>
+                            <option value="Admin" selected="@(isAdmin ? "selected" : null)">Admin</option>
+                        </select>
+                        <button class="btn btn-sm btn-outline-primary" disabled="@isSelf">Simpan</button>
+                    </form>
+                </td>
+                <td>
+                    @if (isAdmin && account.IsActive)
+                    {
+                        <span class="text-muted small">Akun Admin tidak dapat dinonaktifkan</span>
+                    }
+                    else if (account.IsActive)
+                    {
+                        <form asp-action="DeactivateAccount" method="post">
+                            <input type="hidden" name="userId" value="@account.Id" />
+                            <input type="hidden" name="search" value="@Model.Search" />
+                            <button class="btn btn-sm btn-outline-danger" disabled="@isSelf">Nonaktifkan</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="ActivateAccount" method="post">
+                            <input type="hidden" name="userId" value="@account.Id" />
+                            <input type="hidden" name="search" value="@Model.Search" />
+                            <button class="btn btn-sm btn-outline-success" disabled="@isSelf">Aktifkan</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+        @if (Model.Users.Count == 0)
+        {
+            <tr><td colspan="5" class="text-center text-muted py-4">Tidak ada akun yang cocok.</td></tr>
+        }
+        </tbody>
+    </table>
+</div>
+<p class="form-text mt-2">Maksimal 250 akun ditampilkan per pencarian. Admin tidak dapat mengubah role atau status akunnya sendiri.</p>

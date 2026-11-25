@@ -1,0 +1,14 @@
+[2026-11-25 13:35:47.984] [00003D08] === Logging started ===
+[2026-11-25 13:35:47.998] [00003D08] Executing: "C:\Program Files\dotnet\dotnet.exe" build --no-restore -p:UseAppHost=false -p:OutDir=C:\Temp\Fauzora-address-ui-check\, PID: 15624, PPID: 29624
+[2026-11-25 13:35:48.003] [00003D08] IsElevated: False
+[2026-11-25 13:35:48.003] [00003D08] Is64BitProcess: True
+[2026-11-25 13:35:48.003] [00003D08] RebootPending: False
+[2026-11-25 13:35:48.003] [00003D08] ProcessorArchitecture: amd64
+[2026-11-25 13:35:48.003] [00003D08] HostArchitecture: x64
+[2026-11-25 13:35:48.003] [00003D08] SdkDirectory: 10.0.402
+[2026-11-25 13:35:48.003] [00003D08] VerifySignatures: False
+[2026-11-25 13:35:48.003] [00003D08] SDK feature band: 10.0.400
+[2026-11-25 13:36:05.724] [00003D08] Shutting down
+[2026-11-25 13:36:05.724] [00003D08] Shutdown completed.
+[2026-11-25 13:36:05.724] [00003D08] Restart required: False
+[2026-11-25 13:36:05.727] [00003D08] === Logging ended ===

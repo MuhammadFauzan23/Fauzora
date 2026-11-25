@@ -1,0 +1,10 @@
+@model ProductFormVm
+@{ ViewData["Title"] = "Tambah Produk"; }
+<h2 class="mb-3">Tambah Produk</h2>
+<form asp-action="Create" method="post" enctype="multipart/form-data" class="form-panel product-form-panel">
+    <partial name="_ProductForm" model="Model" />
+    <div class="d-flex gap-2">
+        <button class="btn btn-primary">Simpan Produk</button>
+        <a asp-action="MyProducts" class="btn btn-outline-secondary">Batal</a>
+    </div>
+</form>

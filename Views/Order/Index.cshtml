@@ -1,0 +1,35 @@
+@model IEnumerable<Order>
+@inject Fauzora.Services.SecureIdService SecureIds
+@{ ViewData["Title"] = "Pesanan Saya"; }
+<h2 class="mb-3">Pesanan Saya</h2>
+@if (!Model.Any())
+{
+    <div class="empty-state">Kamu belum memiliki pesanan.</div>
+}
+else
+{
+    <div class="table-card table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr><th>No. Pesanan</th><th>Toko</th><th>Checkout</th><th>Tanggal</th><th>Item</th><th>Total</th><th>Status</th><th>Aksi</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var o in Model)
+                {
+                    <tr>
+                        <td>@o.OrderNumber</td>
+                        <td>@(o.SellerName ?? "Pesanan lama")</td>
+                        <td>@(o.CheckoutGroupId is Guid groupId ? groupId.ToString("N")[..8].ToUpperInvariant() : "—")</td>
+                        <td>@o.CreatedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")</td>
+                        <td>@o.Items.Count</td>
+                        <td>@o.Total.ToRupiah()</td>
+                        <td><span class="badge @OrderStatus.BadgeClass(o.Status)">@o.Status</span></td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@SecureIds.Protect(o.Id)" class="btn btn-sm btn-outline-primary text-nowrap">Detail Pesanan</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

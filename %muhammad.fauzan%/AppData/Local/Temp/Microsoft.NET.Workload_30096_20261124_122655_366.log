@@ -1,0 +1,14 @@
+[2026-11-24 12:26:55.370] [00007590] === Logging started ===
+[2026-11-24 12:26:55.377] [00007590] Executing: "dotnet" build C:\xampp\htdocs\Fauzora\Fauzora.csproj /verbosity:quiet /nologo /p:PublishAot=false, PID: 30096, PPID: 15356
+[2026-11-24 12:26:55.379] [00007590] IsElevated: False
+[2026-11-24 12:26:55.379] [00007590] Is64BitProcess: True
+[2026-11-24 12:26:55.379] [00007590] RebootPending: False
+[2026-11-24 12:26:55.379] [00007590] ProcessorArchitecture: amd64
+[2026-11-24 12:26:55.379] [00007590] HostArchitecture: x64
+[2026-11-24 12:26:55.379] [00007590] SdkDirectory: 10.0.402
+[2026-11-24 12:26:55.379] [00007590] VerifySignatures: False
+[2026-11-24 12:26:55.379] [00007590] SDK feature band: 10.0.400
+[2026-11-24 12:26:57.278] [00007590] Shutting down
+[2026-11-24 12:26:57.278] [00007590] Shutdown completed.
+[2026-11-24 12:26:57.278] [00007590] Restart required: False
+[2026-11-24 12:26:57.278] [00007590] === Logging ended ===

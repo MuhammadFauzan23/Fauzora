@@ -1,0 +1,77 @@
+@model IEnumerable<Order>
+@inject Fauzora.Services.SecureIdService SecureIds
+@{
+    ViewData["Title"] = "Pengembalian Toko";
+    var pendingCount = Model.Count(order => order.ReturnStatus == ReturnRequestStatus.Requested);
+}
+
+<div class="page-heading">
+    <div>
+        <p class="eyebrow">Operasional Toko</p>
+        <h1>Pengajuan Pengembalian</h1>
+        <p class="text-muted mb-0">Tinjau dan putuskan permintaan pengembalian untuk pesanan tokomu.</p>
+    </div>
+    <a asp-action="Orders" class="btn btn-outline-secondary">Kembali ke Pesanan</a>
+</div>
+
+<div class="d-flex justify-content-end mb-3">
+    <span class="badge text-bg-warning">@pendingCount menunggu keputusan</span>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">Belum ada pengajuan pengembalian untuk tokomu.</div>
+}
+else
+{
+    <div class="d-grid gap-3">
+        @foreach (var order in Model)
+        {
+            <article class="panel return-card">
+                <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 border-bottom pb-3 mb-3">
+                    <div>
+                        <h2 class="h5 mb-1">Pesanan #@order.OrderNumber</h2>
+                        <div class="text-muted small">@order.Customer?.Email · diajukan @order.ReturnRequestedAt?.ToLocalTime().ToString("dd MMM yyyy HH:mm")</div>
+                    </div>
+                    <span class="badge @ReturnRequestStatus.BadgeClass(order.ReturnStatus)">@ReturnRequestStatus.Label(order.ReturnStatus)</span>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-5">
+                        <h3 class="h6">Produk</h3>
+                        <ul class="small mb-2">
+                            @foreach (var item in order.Items)
+                            {
+                                <li>@item.ProductName (@item.Quantity × @item.UnitPrice.ToRupiah())</li>
+                            }
+                        </ul>
+                        <strong>Total: @order.Total.ToRupiah()</strong>
+                    </div>
+                    <div class="col-md-7">
+                        <h3 class="h6">Alasan customer</h3>
+                        <p class="return-reason">@order.ReturnReason</p>
+                        @if (order.ReturnStatus == ReturnRequestStatus.Requested)
+                        {
+                            <form asp-action="UpdateReturnStatus" method="post" class="seller-return-controls" data-swal-confirm data-swal-title="Perbarui keputusan pengembalian?" data-swal-text="Keputusan akan dikirim kepada customer. Refund yang disetujui masih diproses manual oleh admin." data-swal-confirm-text="Ya, perbarui">
+                                <input type="hidden" name="id" value="@SecureIds.Protect(order.Id)" />
+                                <label class="form-label small" for="return-status-@order.Id">Keputusan</label>
+                                <select id="return-status-@order.Id" name="returnStatus" class="form-select form-select-sm mb-2" required>
+                                    <option value="">Pilih keputusan</option>
+                                    <option value="@ReturnRequestStatus.Approved">@ReturnRequestStatus.Label(ReturnRequestStatus.Approved)</option>
+                                    <option value="@ReturnRequestStatus.Rejected">@ReturnRequestStatus.Label(ReturnRequestStatus.Rejected)</option>
+                                </select>
+                                <label class="form-label small" for="return-note-@order.Id">Catatan untuk customer (opsional)</label>
+                                <input id="return-note-@order.Id" type="text" name="note" class="form-control form-control-sm mb-2" maxlength="500" placeholder="Tulis catatan keputusan" />
+                                <button class="btn btn-primary btn-sm">Simpan Keputusan</button>
+                            </form>
+                        }
+                        else if (!string.IsNullOrWhiteSpace(order.ReturnAdminNote))
+                        {
+                            <div class="small text-muted">Catatan keputusan: @order.ReturnAdminNote</div>
+                        }
+                    </div>
+                </div>
+            </article>
+        }
+    </div>
+}

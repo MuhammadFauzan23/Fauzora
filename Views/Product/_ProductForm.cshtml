@@ -1,0 +1,91 @@
+@model ProductFormVm
+<div asp-validation-summary="All" class="text-danger"></div>
+<div class="mb-3">
+    <label asp-for="Name" class="form-label"></label>
+    <input asp-for="Name" class="form-control" />
+    <span asp-validation-for="Name" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="Description" class="form-label"></label>
+    <textarea asp-for="Description" class="form-control rich-text-editor" data-rich-text-editor rows="6"></textarea>
+    <span asp-validation-for="Description" class="text-danger"></span>
+</div>
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="Price" class="form-label"></label>
+        <div class="input-group money-group">
+            <span class="input-group-text">Rp</span>
+            <input type="text" inputmode="numeric" autocomplete="off" placeholder="0" class="form-control"
+                   data-money="Price" value="@(Model.Price > 0 ? ((long)Math.Truncate(Model.Price)).ToString() : "")" aria-label="Harga dalam rupiah" />
+        </div>
+        <input type="hidden" asp-for="Price" value="@(Model.Price > 0 ? ((long)Math.Truncate(Model.Price)).ToString() : "")" />
+        <div class="money-hint" data-money-hint="Price"></div>
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="Stock" class="form-label"></label>
+        <input asp-for="Stock" class="form-control" />
+        <span asp-validation-for="Stock" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3">
+    <label asp-for="CategoryId" class="form-label"></label>
+    <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select">
+        <option value="">Pilih kategori</option>
+    </select>
+    <span asp-validation-for="CategoryId" class="text-danger"></span>
+</div>
+<section class="product-upload" data-product-upload data-max-images="15">
+    <div class="product-upload-heading">
+        <div>
+            <label asp-for="NewImages" class="form-label mb-1"></label>
+            <div class="form-text">Pilih JPG, PNG, atau WEBP. Maksimal 5 MB per file, 50 MB per pengiriman, dan 15 gambar total.</div>
+        </div>
+        <span class="product-upload-count" data-product-image-count>0 / 15 gambar</span>
+    </div>
+    <input asp-for="NewImages" class="form-control" type="file" accept="image/*" multiple data-product-image-files />
+    <span asp-validation-for="NewImages" class="text-danger"></span>
+
+    <div class="product-image-grid" data-product-image-grid>
+        @for (var i = 0; i < Model.CurrentImageUrls.Count; i++)
+        {
+            var imageUrl = Model.CurrentImageUrls[i];
+            var retained = Model.RetainedImageUrls.Contains(imageUrl, StringComparer.Ordinal);
+            <label class="product-image-choice @(retained ? "selected" : "removed")" data-existing-image>
+                <img src="@imageUrl" alt="Gambar produk tersimpan @(i + 1)" loading="lazy" />
+                <span class="product-image-choice-caption">@(i == 0 ? "Cover saat ini" : $"Gambar {i + 1}")</span>
+                <span class="product-image-choice-action">
+                    <input type="checkbox" name="RetainedImageUrls" value="@imageUrl" checked="@(retained ? "checked" : null)" data-retain-image />
+                    <span data-retain-label>@(retained ? "Dipertahankan" : "Akan dihapus")</span>
+                </span>
+            </label>
+        }
+    </div>
+    <p class="product-image-empty @(Model.CurrentImageUrls.Count == 0 ? "" : "d-none")" data-no-existing-images>Belum ada gambar tersimpan. Upload gambar untuk menampilkan produk.</p>
+    <div class="product-image-grid product-image-new-grid" data-new-image-grid></div>
+    <div class="text-danger mt-2" data-product-image-error role="alert" hidden></div>
+</section>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<script>
+    document.querySelectorAll('[data-rich-text-editor]').forEach(function (element) {
+        element.__fauzoraEditorReady = ClassicEditor.create(element, {
+            language: 'id',
+            toolbar: ['heading', '|', 'bold', 'italic', 'underline', 'strikethrough', '|', 'bulletedList', 'numberedList', 'blockQuote', 'link', '|', 'undo', 'redo'],
+            heading: {
+                options: [
+                    { model: 'paragraph', title: 'Paragraf', class: 'ck-heading_paragraph' },
+                    { model: 'heading2', view: 'h2', title: 'Judul', class: 'ck-heading_heading2' },
+                    { model: 'heading3', view: 'h3', title: 'Subjudul', class: 'ck-heading_heading3' }
+                ]
+            },
+            link: { addTargetToExternalLinks: true }
+        }).then(function (editor) {
+            element.__fauzoraEditor = editor;
+            return editor;
+        }).catch(function (error) {
+            console.error('Editor deskripsi produk gagal dimuat.', error);
+            return null;
+        });
+    });
+</script>

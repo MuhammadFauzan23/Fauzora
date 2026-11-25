@@ -1,0 +1,14 @@
+[2026-11-25 16:46:23.356] [00002F80] === Logging started ===
+[2026-11-25 16:46:23.364] [00002F80] Executing: "C:\Program Files\dotnet\dotnet.exe" build -c Release, PID: 12160, PPID: 28612
+[2026-11-25 16:46:23.366] [00002F80] IsElevated: False
+[2026-11-25 16:46:23.366] [00002F80] Is64BitProcess: True
+[2026-11-25 16:46:23.366] [00002F80] RebootPending: False
+[2026-11-25 16:46:23.366] [00002F80] ProcessorArchitecture: amd64
+[2026-11-25 16:46:23.366] [00002F80] HostArchitecture: x64
+[2026-11-25 16:46:23.366] [00002F80] SdkDirectory: 10.0.402
+[2026-11-25 16:46:23.366] [00002F80] VerifySignatures: False
+[2026-11-25 16:46:23.366] [00002F80] SDK feature band: 10.0.400
+[2026-11-25 16:46:31.121] [00002F80] Shutting down
+[2026-11-25 16:46:31.121] [00002F80] Shutdown completed.
+[2026-11-25 16:46:31.121] [00002F80] Restart required: False
+[2026-11-25 16:46:31.122] [00002F80] === Logging ended ===

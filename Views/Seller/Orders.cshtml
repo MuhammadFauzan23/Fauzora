@@ -1,0 +1,102 @@
+@model IEnumerable<Order>
+@inject Fauzora.Services.SecureIdService SecureIds
+@{
+    ViewData["Title"] = "Pesanan Toko";
+}
+
+<div class="page-heading">
+    <div>
+        <p class="eyebrow">Operasional Toko</p>
+        <h1>Pesanan Toko</h1>
+        <p class="text-muted mb-0">Kelola pesanan dan pengembalian untuk produk milik tokomu.</p>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">Belum ada pesanan untuk toko kamu.</div>
+}
+else
+{
+    <div class="table-card seller-orders-table-wrap">
+        <table class="table align-middle seller-orders-table">
+            <thead>
+                <tr>
+                    <th>No. Pesanan</th>
+                    <th>Customer</th>
+                    <th>Produk</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Pengembalian</th>
+                    <th>Ubah Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td data-label="No. Pesanan">
+                            <strong>@order.OrderNumber</strong>
+                            <small class="d-block text-muted">@order.CreatedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")</small>
+                            @if (order.CheckoutGroupId is Guid groupId)
+                            {
+                                <small class="d-block text-muted">Checkout #@groupId.ToString("N")[..8].ToUpperInvariant()</small>
+                            }
+                            <details class="seller-address-details">
+                                <summary>Alamat tujuan</summary>
+                                <div class="seller-address-popover">
+                                    @await Html.PartialAsync("_OrderAddressSnapshots", new OrderAddressSnapshotVm { Order = order, ShowCustomerAddress = true })
+                                </div>
+                            </details>
+                        </td>
+                        <td data-label="Customer">@(order.Customer?.Email ?? "—")</td>
+                        <td data-label="Produk">
+                            @foreach (var item in order.Items)
+                            {
+                                <div class="small">@item.ProductName <span class="text-muted">(@item.Quantity × @item.UnitPrice.ToRupiah())</span></div>
+                            }
+                        </td>
+                        <td data-label="Total">@order.Total.ToRupiah()</td>
+                        <td data-label="Status"><span class="badge @OrderStatus.BadgeClass(order.Status)">@order.Status</span></td>
+                        <td data-label="Pengembalian">
+                            <span class="badge @ReturnRequestStatus.BadgeClass(order.ReturnStatus)">@ReturnRequestStatus.Label(order.ReturnStatus)</span>
+                            @if (!string.IsNullOrWhiteSpace(order.ReturnReason))
+                            {
+                                <div class="small mt-1"><strong>Alasan:</strong> @order.ReturnReason</div>
+                            }
+                            @if (order.ReturnStatus == ReturnRequestStatus.Requested)
+                            {
+                                <form asp-action="UpdateReturnStatus" method="post" class="d-grid gap-2 mt-2 seller-return-controls" data-swal-confirm data-swal-title="Perbarui status pengembalian?" data-swal-text="Keputusan ini akan dikirim kepada customer. Refund yang disetujui masih diproses manual oleh admin." data-swal-confirm-text="Ya, perbarui">
+                                    <input type="hidden" name="id" value="@SecureIds.Protect(order.Id)" />
+                                    <select name="returnStatus" class="form-select form-select-sm" required aria-label="Pilih status pengembalian">
+                                        <option value="">Pilih status</option>
+                                        <option value="@ReturnRequestStatus.Approved">@ReturnRequestStatus.Label(ReturnRequestStatus.Approved)</option>
+                                        <option value="@ReturnRequestStatus.Rejected">@ReturnRequestStatus.Label(ReturnRequestStatus.Rejected)</option>
+                                    </select>
+                                    <input type="text" name="note" class="form-control form-control-sm" maxlength="500" placeholder="Catatan keputusan (opsional)" />
+                                    <button class="btn btn-sm btn-outline-primary">Update Pengembalian</button>
+                                </form>
+                            }
+                            else if (!string.IsNullOrWhiteSpace(order.ReturnAdminNote))
+                            {
+                                <small class="d-block text-muted mt-1">Catatan: @order.ReturnAdminNote</small>
+                            }
+                        </td>
+                        <td data-label="Ubah Status">
+                            <form asp-action="UpdateOrderStatus" method="post" class="d-flex gap-2 seller-order-status-controls" data-swal-confirm data-swal-title="Perbarui status pesanan?" data-swal-text="Status pesanan toko ini akan diperbarui." data-swal-confirm-text="Ya, perbarui">
+                                <input type="hidden" name="id" value="@SecureIds.Protect(order.Id)" />
+                                <select name="status" class="form-select form-select-sm" required aria-label="Pilih status pesanan">
+                                    @foreach (var status in OrderStatus.All)
+                                    {
+                                        <option value="@status" selected="@(status == order.Status)">@status</option>
+                                    }
+                                </select>
+                                <button class="btn btn-sm btn-primary">Update</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
